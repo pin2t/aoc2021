@@ -1,14 +1,12 @@
 import java.io.*;
 
 public class Scanner {
-    private BufferedInputStream in;
-    int c;
-    boolean atBeginningOfLine;
- 
+    private final BufferedInputStream in;
+    private int c;
+
     public Scanner(InputStream stream) {
        in = new BufferedInputStream(stream);
        try {
-          atBeginningOfLine = true;
           c  = (char)in.read();
        } catch (IOException e) {
           c  = -1;
@@ -16,14 +14,11 @@ public class Scanner {
     }
  
     public boolean hasNext() {
-//       if (!atBeginningOfLine) 
-//          throw new RuntimeException("hasNext only works after a call to nextLine");
        return c != -1;
     }
  
     public String next() {
-       StringBuffer sb = new StringBuffer();
-       atBeginningOfLine = false;
+       StringBuilder sb = new StringBuilder();
        try {
           while (c <= ' ') {
              c = in.read();
@@ -40,8 +35,7 @@ public class Scanner {
     }
  
     public String nextLine() {
-       StringBuffer sb = new StringBuffer();
-       atBeginningOfLine = true;
+       StringBuilder sb = new StringBuilder();
        try {
           while (c != '\n') {
              sb.append((char)c);
