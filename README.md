@@ -13,3 +13,5 @@ First compile dependency
 Then run pretty much as go solutions
 
 `java d1.java < 1.txt`
+
+This works for Java 11+ only
