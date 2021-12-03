@@ -12,11 +12,9 @@ func stat(values []string, bit int) (int, int) {
 	for _, v := range values {
 		if v[bit] == '0' {
 			zeros++
-		} else {
-			ones++
 		}
 	}
-	return zeros, ones
+	return zeros, len(values) - ones
 }
 
 func filter(values []string, bit int, bitval int) []string {
