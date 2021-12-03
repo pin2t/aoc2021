@@ -10,10 +10,7 @@ import (
 
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
-	depth := 0
-	depth2 := 0
-	position := 0
-	aim := 0
+	var depth, depth2, position, aim int
 	for scanner.Scan() {
 		pair := strings.Split(scanner.Text(), " ")
 		cmd := pair[0]

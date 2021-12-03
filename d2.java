@@ -4,7 +4,7 @@ public class d2 {
         long depth = 0, depth2 = 0, aim = 0, position = 0;
         while (scanner.hasNext()) {
             String cmd = scanner.next();
-            long arg = (long)scanner.nextInt();
+            long arg = scanner.nextInt();
             switch (cmd) {
                 case "forward": position += arg; depth2 += arg * aim; break;
                 case "up": depth -= arg; aim -= arg; break;
