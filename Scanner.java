@@ -37,11 +37,12 @@ public class Scanner {
     public String nextLine() {
        StringBuilder sb = new StringBuilder();
        try {
-          while (c != '\n') {
+          while (c != '\n' && c != -1) {
              sb.append((char)c);
              c = in.read();
           }
-          c = in.read();
+          if (c != -1)
+            c = in.read();
        } catch (IOException e) {
           c = -1;
           return "";
