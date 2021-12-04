@@ -20,19 +20,23 @@ public class d3 {
             }
         }
         System.out.println(gamma * epsilon);
-        int oxygen = Integer.parseInt(filter(values, true), 2);
-        int co2 = Integer.parseInt(filter(values, false), 2);
+        int oxygen = Integer.parseInt(filter(values, (zeros, ones) -> (zeros > ones ? '0' : '1')), 2);
+        int co2 = Integer.parseInt(filter(values, (zeros, ones) -> (zeros > ones ? '1' : '0')), 2);
         System.out.println(oxygen * co2);
     }
 
-    static String filter(List<String> values, boolean most) {
+    static String filter(List<String> values, BitFunc f) {
         List<String> left = new ArrayList<>(values);
         for (int bit = 0; bit < values.get(0).length() && left.size() > 1; bit++) {
             int bb = bit;
             long zeros = left.stream().filter(v -> v.charAt(bb) == '0').count();
             long ones = left.size() - zeros;
-            left = left.stream().filter(v -> most ? (v.charAt(bb) == (zeros > ones ? '0' : '1')) : (v.charAt(bb) == (zeros > ones ? '1' : '0'))).collect(Collectors.toList());
+            left = left.stream().filter(v -> v.charAt(bb) == f.bit((int)zeros, (int)ones)).collect(Collectors.toList());
         }   
         return left.get(0);
+    }
+
+    interface BitFunc {
+        char bit(int zeros, int ones);
     }
 }
