@@ -3,19 +3,21 @@ import java.util.stream.Collectors;
 
 import static java.lang.System.out;
 
+import java.io.*;
+
 public class d4 {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+    public static void main(String[] args) throws NumberFormatException, IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         List<Integer> numbers = new ArrayList<>();
-        for (String s : scanner.nextLine().split(",")) {
+        for (String s : reader.readLine().split(",")) {
             if (s != null && !s.isEmpty()) {
                 numbers.add(Integer.valueOf(s));
             }
         }
         List<Board> boards = new ArrayList<>();
-        while (scanner.hasNext()) {
-            scanner.nextLine();
-            boards.add(new Board(scanner));
+        while (reader.ready()) {
+            reader.readLine();
+            boards.add(new Board(reader));
         }
         int first = 0, last = 0, wins = 0;
         for (Integer n : numbers) {
@@ -42,8 +44,8 @@ public class d4 {
         private final int size;
         private final int[] numbers;
 
-        Board(Scanner scanner) {
-            String[] first = scanner.nextLine().strip().split("\\s+");
+        Board(BufferedReader reader) throws NumberFormatException, IOException {
+            String[] first = reader.readLine().strip().split("\\s+");
             this.size = (int)Arrays.stream(first).filter(v -> v != null && !v.isEmpty()).count();
             this.numbers = new int[this.size * this.size];
             for (int c = 0; c < this.size; c++) {
@@ -51,7 +53,7 @@ public class d4 {
             }
             for (int r = 1; r < this.size; r++) {
                 int c = 0;
-                for (String s : scanner.nextLine().strip().split("\\s+")) {
+                for (String s : reader.readLine().strip().split("\\s+")) {
                     this.numbers[r * this.size + c++] = Integer.parseInt(s);
                 }
             }
