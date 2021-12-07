@@ -19,11 +19,7 @@ func simulate(count []int64, days int) int64 {
 			result[i-1] += prev[i]
 		}
 	}
-	sum := int64(0)
-	for _, c := range result {
-		sum += c
-	}
-	return sum
+	return sumSlice(result)
 }
 
 func main() {

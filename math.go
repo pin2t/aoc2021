@@ -46,3 +46,11 @@ func maxSlice(s []int64) int64 {
 	}
 	return result
 }
+
+func sumSlice(s []int64) int64 {
+	result := int64(0)
+	for _, i := range s {
+		result += i
+	}
+	return result
+}
