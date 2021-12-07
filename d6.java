@@ -5,11 +5,10 @@ import java.util.regex.Pattern;
 
 public class d6 {
     public static void main(String[] args) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        Pattern num = Pattern.compile("\\d+");
-        Matcher matcher = num.matcher(reader.readLine());
+        Scanner scanner = new Scanner(System.in);
+        int[] pos = scanner.readInts();
         long[] counts = new long[9];
-        while (matcher.find()) counts[Integer.parseInt(matcher.group())]++;
+        for (int p : pos) counts[p]++;
         System.out.println(totalAfter(counts, 80));
         System.out.println(totalAfter(counts, 256));
     }
