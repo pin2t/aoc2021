@@ -8,26 +8,6 @@ import (
 	"strconv"
 )
 
-func min(vars ...int64) int64 {
-	result := vars[0]
-	for _, i := range vars {
-		if result > i {
-			result = i
-		}
-	}
-	return result
-}
-
-func max(vars ...int64) int64 {
-	result := vars[0]
-	for _, i := range vars {
-		if result < i {
-			result = i
-		}
-	}
-	return result
-}
-
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	re := regexp.MustCompile("\\d+")

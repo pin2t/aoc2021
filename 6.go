@@ -4,8 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"regexp"
-	"strconv"
 )
 
 func simulate(count []int64, days int) int64 {
@@ -29,13 +27,10 @@ func simulate(count []int64, days int) int64 {
 }
 
 func main() {
-	scanner := bufio.NewScanner(os.Stdin)
-	scanner.Scan()
-	digits := regexp.MustCompile("\\d")
+	ages := readInts(bufio.NewScanner(os.Stdin))
 	count := make([]int64, 9)
-	for _, s := range digits.FindAllString(scanner.Text(), -1) {
-		i, _ := strconv.ParseInt(s, 0, 0)
-		count[i]++
+	for _, age := range ages {
+		count[age]++
 	}
 	fmt.Println(simulate(count, 80))
 	fmt.Println(simulate(count, 256))

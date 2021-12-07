@@ -4,46 +4,21 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"regexp"
-	"strconv"
 )
 
 func main() {
-	scanner := bufio.NewScanner(os.Stdin)
-	scanner.Scan()
-	digits := regexp.MustCompile("\\d+")
-	pos := make([]int, 0, 1000)
-	maxpos := 0
-	for _, s := range digits.FindAllString(scanner.Text(), -1) {
-		p, _ := strconv.ParseInt(s, 0, 0)
-		pos = append(pos, int(p))
-		if int(p) > maxpos {
-			maxpos = int(p)
-		}
-	}
-	result := 10000000000
-	result2 := 10000000000
-	for p := 0; p <= maxpos; p++ {
-		sum, sum2 := 0, 0
+	pos := readInts(bufio.NewScanner(os.Stdin))
+	maxpos := maxSlice(pos)
+	fuel := make([]int64, 0, maxpos+1)
+	fuel2 := make([]int64, 0, maxpos+1)
+	for p := int64(0); p <= maxpos; p++ {
+		sum, sum2 := int64(0), int64(0)
 		for _, i := range pos {
-			if i > p {
-				sum += i - p
-				for j := p; j <= i; j++ {
-					sum2 += (j - p)
-				}
-			} else {
-				sum += p - i
-				for j := i; j <= p; j++ {
-					sum2 += (j - i)
-				}
-			}
+			sum += abs(i - p)
+			sum2 += (abs(i-p) + 1) * (i + p - 2*min(i, p)) / 2
 		}
-		if sum < result {
-			result = sum
-		}
-		if sum2 < result2 {
-			result2 = sum2
-		}
+		fuel = append(fuel, sum)
+		fuel2 = append(fuel2, sum2)
 	}
-	fmt.Println(result, result2)
+	fmt.Println(minSlice(fuel), minSlice(fuel2))
 }
