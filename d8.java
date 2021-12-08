@@ -3,6 +3,7 @@ import java.io.InputStreamReader;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class d8 {
     public static void main(String[] args) {
@@ -37,7 +38,9 @@ public class d8 {
                 if (valid.size() == 10) {
                     matcher = segments.matcher(parts[1]);
                     int nn = 0;
+                    var rightFields = new ArrayList<String>();
                     while (matcher.find()) {
+                        rightFields.add(matcher.group());
                         for (int n = 0; n < templates.length; n++) {
                             if (templates[n].equals(map(mapping, matcher.group())))  {
                                 nn = nn * 10 + n;
@@ -46,6 +49,8 @@ public class d8 {
                         }
                     }
                     decoded.add(nn);
+                    System.out.println("[" + numSegments.stream().collect(Collectors.joining(" ")) + "] " +
+                                       "[" + rightFields.stream().collect(Collectors.joining(" ")) + "] " + nn);
                     break;
                 }
             }
