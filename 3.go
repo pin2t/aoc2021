@@ -7,14 +7,14 @@ import (
 	"strconv"
 )
 
-func stat(values []string, bit int) (int, int) {
-	var zeros, ones int
+func zeros(values []string, bit int) int {
+	var zeros int
 	for _, v := range values {
 		if v[bit] == '0' {
 			zeros++
 		}
 	}
-	return zeros, len(values) - ones
+	return zeros
 }
 
 func filter(values []string, bit int, bitval int) []string {
@@ -35,8 +35,8 @@ func main() {
 	}
 	var gamma, epsilon int
 	for i := 0; i < len(values[0]); i++ {
-		zeros, ones := stat(values, i)
-		if zeros > ones {
+		zeros := zeros(values, i)
+		if zeros > len(values)-zeros {
 			gamma = gamma*2 + 0
 			epsilon = epsilon*2 + 1
 		} else {
@@ -47,8 +47,8 @@ func main() {
 	fmt.Println(gamma * epsilon)
 	left := values
 	for bit := 0; bit < len(values[0]) && len(left) > 1; bit++ {
-		zeros, ones := stat(left, bit)
-		if zeros > ones {
+		zeros := zeros(left, bit)
+		if zeros > len(left)-zeros {
 			left = filter(left, bit, 0)
 		} else {
 			left = filter(left, bit, 1)
@@ -57,8 +57,8 @@ func main() {
 	oxygen, _ := strconv.ParseInt(left[0], 2, 32)
 	left = values
 	for bit := 0; bit < len(values[0]) && len(left) > 1; bit++ {
-		zeros, ones := stat(left, bit)
-		if zeros > ones {
+		zeros := zeros(left, bit)
+		if zeros > len(left)-zeros {
 			left = filter(left, bit, 1)
 		} else {
 			left = filter(left, bit, 0)
