@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"sort"
 	"strings"
 )
 
@@ -19,12 +18,20 @@ func permutations(p *[]string, prefix string, s string) {
 }
 
 func mapSegments(s string, mapping string) string {
-	result := make([]string, len(s))
+	result := make([]rune, len(s))
 	for i, c := range s {
-		result[i] = string(mapping[byte(c-'a')])
+		result[i] = rune(mapping[byte(c-'a')])
 	}
-	sort.Strings(result)
-	return strings.Join(result, "")
+	for i := 0; i < len(result); i++ {
+		for j := i + 1; j < len(result); j++ {
+			if result[j] < result[i] {
+				t := result[j]
+				result[j] = result[i]
+				result[i] = t
+			}
+		}
+	}
+	return string(result)
 }
 
 func main() {
@@ -62,7 +69,6 @@ func main() {
 					}
 				}
 				decoded = append(decoded, d)
-				fmt.Println(leftFields, rightFields, d)
 			}
 		}
 	}

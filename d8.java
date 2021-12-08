@@ -49,8 +49,6 @@ public class d8 {
                         }
                     }
                     decoded.add(nn);
-                    System.out.println("[" + numSegments.stream().collect(Collectors.joining(" ")) + "] " +
-                                       "[" + rightFields.stream().collect(Collectors.joining(" ")) + "] " + nn);
                     break;
                 }
             }
