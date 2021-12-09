@@ -1,7 +1,6 @@
 import java.io.*;
 import java.util.Arrays;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import static java.lang.System.out;
 
 public class d6 {
     public static void main(String[] args) throws IOException {
@@ -9,8 +8,8 @@ public class d6 {
         int[] pos = scanner.readInts();
         long[] counts = new long[9];
         for (int p : pos) counts[p]++;
-        System.out.println(totalAfter(counts, 80));
-        System.out.println(totalAfter(counts, 256));
+        out.println(totalAfter(counts, 80));
+        out.println(totalAfter(counts, 256));
     }
     
     static long totalAfter(long[] initial, int days) {

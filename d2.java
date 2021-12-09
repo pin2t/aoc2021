@@ -1,3 +1,5 @@
+import static java.lang.System.out;
+
 public class d2 {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -11,7 +13,7 @@ public class d2 {
                 case "down": depth += arg; aim += arg; break;
             }
         }
-        System.out.println(position * depth);
-        System.out.println(position * depth2);
+        out.println(position * depth);
+        out.println(position * depth2);
     }
 }

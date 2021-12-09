@@ -1,8 +1,11 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static java.lang.Integer.parseInt;
+import static java.lang.System.out;
+import static java.util.Arrays.stream;
 
 public class d5 {
     public static void main(String[] args) {
@@ -13,8 +16,8 @@ public class d5 {
             Matcher matcher = num.matcher(line);
             if (!matcher.matches())
                 throw new RuntimeException("invalid input " + line);
-            int x1 = Integer.parseInt(matcher.group(1)), y1 = Integer.parseInt(matcher.group(2)),
-                x2 = Integer.parseInt(matcher.group(3)), y2 = Integer.parseInt(matcher.group(4));
+            int x1 = parseInt(matcher.group(1)), y1 = parseInt(matcher.group(2)),
+                x2 = parseInt(matcher.group(3)), y2 = parseInt(matcher.group(4));
             if (x1 == x2 || y1 == y2) {
                 board.mark(x1, y1, x2, y2);
                 board2.mark(x1, y1, x2, y2);
@@ -23,8 +26,8 @@ public class d5 {
                 board2.mark(x1, y1, x2, y2);
             }
         });
-        System.out.println(board.points());
-        System.out.println(board2.points());
+        out.println(board.points());
+        out.println(board2.points());
     }
 
     static class Board {
@@ -48,7 +51,7 @@ public class d5 {
         }
 
         int points() {
-            return (int)Arrays.stream(this.numbers).filter(v -> v > 1).count();
+            return (int) stream(this.numbers).filter(v -> v > 1).count();
         }
     }
 }

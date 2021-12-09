@@ -3,7 +3,8 @@ import java.io.InputStreamReader;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+
+import static java.lang.System.out;
 
 public class d8 {
     public static void main(String[] args) {
@@ -12,7 +13,7 @@ public class d8 {
         var segments = Pattern.compile("[a-z]+");
         var decoded = new ArrayList<Integer>();
         var mappings = new ArrayList<String>();
-        fillMappings(mappings, "", "abcdefg");
+        permutations(mappings, "", "abcdefg");
         var templates = new String[] {"abcefg", "cf", "acdeg", "acdfg", "bcdf", "abdfg", "abdefg", "acf", "abcdefg", "abcdfg"}; 
         reader.lines().forEach(line -> {
             var parts = line.split("\\|");
@@ -53,8 +54,8 @@ public class d8 {
                 }
             }
         });
-        System.out.println(numbers.get());
-        System.out.println(decoded.stream().mapToInt(Integer::intValue).sum());
+        out.println(numbers.get());
+        out.println(decoded.stream().mapToInt(Integer::intValue).sum());
     }
 
     static String map(String mapping, String s) {
@@ -66,13 +67,13 @@ public class d8 {
         return new String(result);
     }
 
-    static void fillMappings(List<String> mappings, String prefix, String str) {
+    static void permutations(List<String> mappings, String prefix, String str) {
         int n = str.length();
         if (n == 0) {
             mappings.add(prefix);
         } else {
             for (int i = 0; i < n; i++) {
-                fillMappings(mappings, prefix + str.charAt(i), str.substring(0, i) + str.substring(i+1, n));
+                permutations(mappings, prefix + str.charAt(i), str.substring(0, i) + str.substring(i+1, n));
             }
         }
     }    

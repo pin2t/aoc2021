@@ -2,6 +2,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.lang.Integer.parseInt;
+import static java.lang.System.out;
+
 public class d3 {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -19,10 +22,10 @@ public class d3 {
                 epsilon *= 2; 
             }
         }
-        System.out.println(gamma * epsilon);
-        int oxygen = Integer.parseInt(filter(values, (zeros, ones) -> (zeros > ones ? '0' : '1')), 2);
-        int co2 = Integer.parseInt(filter(values, (zeros, ones) -> (zeros > ones ? '1' : '0')), 2);
-        System.out.println(oxygen * co2);
+        out.println(gamma * epsilon);
+        int oxygen = parseInt(filter(values, (zeros, ones) -> (zeros > ones ? '0' : '1')), 2);
+        int co2 = parseInt(filter(values, (zeros, ones) -> (zeros > ones ? '1' : '0')), 2);
+        out.println(oxygen * co2);
     }
 
     static String filter(List<String> values, BitFunc f) {

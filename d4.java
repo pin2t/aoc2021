@@ -2,6 +2,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.lang.System.out;
+import static java.util.Arrays.stream;
 
 import java.io.*;
 
@@ -46,7 +47,7 @@ public class d4 {
 
         Board(BufferedReader reader) throws NumberFormatException, IOException {
             String[] first = reader.readLine().strip().split("\\s+");
-            this.size = (int)Arrays.stream(first).filter(v -> v != null && !v.isEmpty()).count();
+            this.size = (int) stream(first).filter(v -> v != null && !v.isEmpty()).count();
             this.numbers = new int[this.size * this.size];
             for (int c = 0; c < this.size; c++) {
                 this.numbers[c] = Integer.parseInt(first[c]);
@@ -60,7 +61,7 @@ public class d4 {
         }
 
         public String toString() {
-            return String.valueOf(this.size) + ": [" + Arrays.stream(this.numbers).mapToObj(Integer::toString).collect(Collectors.joining(", ")) + "] addition ";
+            return String.format("%d: [%s]", this.size, stream(this.numbers).mapToObj(Integer::toString).collect(Collectors.joining(", ")));
         }
 
         void mark(int n) {
@@ -90,7 +91,7 @@ public class d4 {
         }
 
         int score(int n) {
-            return ((int)Arrays.stream(this.numbers).filter(v -> v == MARK).count() + (int)Arrays.stream(this.numbers).sum()) * n;
+            return ((int) stream(this.numbers).filter(v -> v == MARK).count() + (int) stream(this.numbers).sum()) * n;
         }
     }
 }

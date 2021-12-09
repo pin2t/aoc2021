@@ -1,3 +1,5 @@
+import static java.lang.System.out;
+
 public class d1 {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -11,7 +13,7 @@ public class d1 {
             if (val > prev[0]) result2++;
             prev[0] = prev[1]; prev[1] = prev[2]; prev[2] = val;
         }
-        System.out.println(result1);
-        System.out.println(result2);
+        out.println(result1);
+        out.println(result2);
     }
 }

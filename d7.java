@@ -1,7 +1,6 @@
 import java.io.*;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import static java.lang.System.out;
 
 public class d7 {
     public static void main(String[] args) throws IOException {
@@ -15,7 +14,7 @@ public class d7 {
             fuel[p] = Arrays.stream(pos).map(pp -> Math.abs(pp - finalp)).sum();
             fuel2[p] = Arrays.stream(pos).map(pp -> ((Math.abs(pp - finalp) + 1) * (pp + finalp - 2 * Math.min(pp, finalp))) / 2).sum();
         }
-        System.out.println(Arrays.stream(fuel).min().getAsInt());
-        System.out.println(Arrays.stream(fuel2).min().getAsInt());
+        out.println(Arrays.stream(fuel).min().getAsInt());
+        out.println(Arrays.stream(fuel2).min().getAsInt());
     }
 }
