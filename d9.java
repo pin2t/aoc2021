@@ -15,7 +15,7 @@ public class d9 {
     }
 
     static class Field {
-        final List<String> heights = new ArrayList<>();
+        private final List<String> heights = new ArrayList<>();
 
         Field(BufferedReader reader) {
             reader.lines().forEach(line -> heights.add("9" + line + "9"));
@@ -23,7 +23,7 @@ public class d9 {
             heights.add(0, "9".repeat(heights.get(0).length()));
         }
 
-        boolean low(int x, int y) {
+        private boolean low(int x, int y) {
             char c = heights.get(y).charAt(x);
             return heights.get(y-1).charAt(x) > c && heights.get(y).charAt(x-1) > c && heights.get(y+1).charAt(x) > c && heights.get(y).charAt(x+1) > c;
         }
@@ -71,7 +71,7 @@ public class d9 {
     }
 
     static class Position {
-        int x, y;
+        final int x, y;
         Position(int x, int y) { this.x = x; this.y = y; }
         public boolean equals(Object other) { return x == ((Position)other).x && y == ((Position)other).y; }
         public int hashCode() { return Objects.hash(this.x, this.y); }
