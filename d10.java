@@ -1,8 +1,5 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.io.*;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class d10 {
@@ -28,7 +25,7 @@ public class d10 {
                 i++;
             }
             if (i == line.length()) {
-                long incomplete = 0L;
+                var incomplete = 0L;
                 while (!stack.isEmpty()) {
                     incomplete = incomplete * 5L + incScore.get(stack.pop());
                 }
