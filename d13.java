@@ -2,7 +2,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -76,7 +75,5 @@ public class d13 {
             this.axis = matcher.group(1);
             this.pos = Integer.parseInt(matcher.group(2));
         }
-        public boolean equals(Object other) { return this.axis.equals(((Folding)other).axis) && this.pos == ((Folding)other).pos; }
-        public int hashCode() { return Objects.hash(this.axis, this.pos); }
     }
 }
