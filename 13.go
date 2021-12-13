@@ -26,8 +26,8 @@ func main() {
 	for scanner.Scan() {
 		pair := strings.Split(strings.Replace(scanner.Text(), "fold along ", "", -1), "=")
 		folded := make(map[dot]bool)
+		n, _ := strconv.ParseInt(pair[1], 0, 0)
 		for d, _ := range dots {
-			n, _ := strconv.ParseInt(pair[1], 0, 0)
 			if pair[0] == "x" {
 				if d.x > int(n) {
 					folded[dot{int(n) - (d.x - int(n)), d.y}] = true
