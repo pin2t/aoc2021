@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -12,27 +13,25 @@ public class d13 {
     public static void main(String[] args) {
         var reader = new BufferedReader(new InputStreamReader(System.in));
         var dots = new HashSet<Dot>();
-        var foldings = new ArrayList<String>();
+        var foldings = new ArrayList<Folding>();
         reader.lines().forEach(line -> {
-            if (line.startsWith("fold along")) {
-                foldings.add(line);
+            if (line.startsWith("fold")) {
+                foldings.add(new Folding(line));
             } else if (!line.isBlank()) {
                 dots.add(new Dot(line));
             }
         });
-        var foldPtn = Pattern.compile("fold along (x|y)\\=(\\d+)");
-        final var matcher = foldPtn.matcher(foldings.get(0));
-        if (!matcher.matches()) throw new RuntimeException("invalid input " + foldings.get(0));
-        out.println(dots.stream().map(d -> d.fold(matcher.group(1), Integer.parseInt(matcher.group(2)))).collect(Collectors.toSet()).size());
+        out.println(dots.stream().map(d -> d.fold(foldings.get(0))).collect(Collectors.toSet()).size());
         Set<Dot> result = new HashSet<>(dots);
         for (var f : foldings) {
-            final var matcher2 = foldPtn.matcher(f);
-            if (!matcher2.matches()) throw new RuntimeException("invalid input " + f);
-            result = result.stream().map(d -> d.fold(matcher2.group(1), Integer.parseInt(matcher2.group(2)))).collect(Collectors.toSet());
+            result = result.stream().map(d -> d.fold(f)).collect(Collectors.toSet());
         }
         for (int y = 0; y < result.stream().mapToInt(d -> d.y).max().getAsInt() + 1; y++) {
             for (int x = 0; x < result.stream().mapToInt(d -> d.x).max().getAsInt() + 1; x++) {
-                if (result.contains(new Dot(x, y))) out.print("#"); else out.print(".");
+                if (result.contains(new Dot(x, y)))
+                    out.print("#");
+                else
+                    out.print(".");
             }
             out.println();
         }
@@ -51,16 +50,33 @@ public class d13 {
             this.y = y;
         }
 
-        Dot fold(String axis, int n) {
-            if (axis.equals("x")) {
-                if (x > n) return new Dot(n - (x - n), y);
+        Dot fold(Folding f) {
+            if (f.axis.equals("x")) {
+                if (x > f.pos) return new Dot(f.pos - (x - f.pos), y);
                 else return this;
             } else {
-                if (y > n) return new Dot(x, n - (y - n));
+                if (y > f.pos) return new Dot(x, f.pos - (y - f.pos));
                 else return this;
             }
         }
         public boolean equals(Object other) { return ((Dot)other).x == x && ((Dot)other).y == y; }
         public int hashCode() { return this.x + this.y; }
+    }
+
+    static class Folding {
+        private static Pattern foldPtn = Pattern.compile("fold along (x|y)\\=(\\d+)");
+        final String axis;
+        final int pos;
+
+        Folding(String line) {
+            var matcher = foldPtn.matcher(line);
+            if (!matcher.matches()) {
+                throw new RuntimeException("invalid input " + line);
+            }
+            this.axis = matcher.group(1);
+            this.pos = Integer.parseInt(matcher.group(2));
+        }
+        public boolean equals(Object other) { return this.axis.equals(((Folding)other).axis) && this.pos == ((Folding)other).pos; }
+        public int hashCode() { return Objects.hash(this.axis, this.pos); }
     }
 }
