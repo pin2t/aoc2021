@@ -1,9 +1,8 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.lang.System.out;
 
@@ -12,12 +11,12 @@ public class d12 {
         var reader = new BufferedReader(new InputStreamReader(System.in));
         var edges = new ArrayList<Edge>();
         reader.lines().forEach(line -> edges.add(new Edge(line)));
-        var paths = new HashSet<List<String>>();
+        var paths = new AtomicInteger();
         var path = new ArrayList<String>();
         path.add("start");
         walk(paths, path, edges, (_path, to) -> (!_path.contains(to) || to.charAt(0) >= 'A' && to.charAt(0) <= 'Z'));
-        out.println(paths.size());
-        paths = new HashSet<List<String>>();
+        out.println(paths.get());
+        paths.set(0);
         path = new ArrayList<String>();
         path.add("start");
         walk(paths, path, edges, (_path, to) -> {
@@ -34,13 +33,13 @@ public class d12 {
             _path.remove(_path.size() - 1);
             return dup <= 2;
         });
-        out.println(paths.size());
+        out.println(paths.get());
     }
 
-    static void walk(Set<List<String>> paths, List<String> path, List<Edge> edges, StepFunc can) {
+    static void walk(AtomicInteger paths, List<String> path, List<Edge> edges, StepFunc can) {
         var cave = path.get(path.size() - 1);
         if (cave.equals("end")) {
-            paths.add(new ArrayList<>(path));
+            paths.incrementAndGet();
             return;
         }
         for (var edge : edges) {
