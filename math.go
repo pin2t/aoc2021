@@ -37,6 +37,16 @@ func minSlice(s []int64) int64 {
 	return result
 }
 
+func minSliceGreater(s []int64, n int64) int64 {
+	result := maxSlice(s)
+	for _, i := range s {
+		if result > i && i > n {
+			result = i
+		}
+	}
+	return result
+}
+
 func maxSlice(s []int64) int64 {
 	result := s[0]
 	for _, i := range s {
