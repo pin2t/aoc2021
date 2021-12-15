@@ -64,9 +64,9 @@ func main() {
 	for scanner.Scan() {
 		risks = append(risks, scanner.Text())
 	}
-	fmt.Println(path(len(risks), func(x int, y int) int { return int(risks[y][x]) - int('0') }))
 	size := len(risks)
-	fmt.Println(path(len(risks)*5, func(x int, y int) int {
+	fmt.Println(path(size, func(x int, y int) int { return int(risks[y][x]) - int('0') }))
+	fmt.Println(path(size*5, func(x int, y int) int {
 		r := int(risks[y%size][x%size]) - int('0') + x/size + y/size
 		if r > 9 {
 			return r - 9
