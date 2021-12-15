@@ -9,26 +9,13 @@ import (
 
 func path(size int, risk func(x int, y int) int) int {
 	var field [][]int
-	field = make([][]int, 0, size+2)
-	f := make([]int, size+2)
-	for i := 0; i < len(f); i++ {
-		f[i] = -1
-	}
-	field = append(field, f)
-	for i := 0; i < size; i++ {
-		f := make([]int, size+2)
-		for i := 0; i < len(f); i++ {
-			f[i] = math.MaxInt / 2
+	field = make([][]int, size+2)
+	for i := 0; i < len(field); i++ {
+		field[i] = make([]int, size+2)
+		for j := 0; j < len(field[i]); j++ {
+			field[i][j] = math.MaxInt / 2
 		}
-		f[0] = -1
-		f[len(f)-1] = -1
-		field = append(field, f)
 	}
-	f = make([]int, size+2)
-	for i := 0; i < len(f); i++ {
-		f[i] = -1
-	}
-	field = append(field, f)
 	field[1][1] = 0
 	neighbor := func(x int, y int, dx int, dy int) bool {
 		_risk := risk(x-1, y-1)
@@ -42,16 +29,22 @@ func path(size int, risk func(x int, y int) int) int {
 		found = false
 		for y := 1; y <= size; y++ {
 			for x := 1; x <= size; x++ {
-				if found = neighbor(x, y, -1, 0); found {
+				found = neighbor(x, y, -1, 0)
+				if found {
 					break
 				}
-				if found = neighbor(x, y, +1, 0); found {
+				found = neighbor(x, y, +1, 0)
+				if found {
 					break
 				}
-				if found = neighbor(x, y, 0, -1); found {
+				found = neighbor(x, y, 0, -1)
+				if found {
 					break
 				}
 				found = neighbor(x, y, 0, +1)
+				if found {
+					break
+				}
 			}
 		}
 	}

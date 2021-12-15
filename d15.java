@@ -1,7 +1,5 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static java.lang.System.out;
@@ -18,14 +16,13 @@ public class d15 {
     }
 
     static int shortest(int size, RiskFunc risk) {
-        var field = new HashMap<Position, Integer>();
-        field.put(new Position(0, 0), 0);
+        var field = new int[(size+2)*(size + 2)];
+        for (int i = 0; i < field.length; i++) field[i] = Integer.MAX_VALUE / 2;
+        field[(size + 2) + 1] = 0;
         NeighborFunc neighbor = (x, y, dx, dy) -> {
             var r = risk.risk(x, y);
-            var pn = new Position(x + dx, y + dy);
-            var p = new Position(x, y);
-            if (field.getOrDefault(pn, Integer.MAX_VALUE / 2) + r < field.getOrDefault(p, Integer.MAX_VALUE / 2)) {
-                field.put(p, field.getOrDefault(pn, Integer.MAX_VALUE / 2) + r);
+            if (field[(x + dx) + 1 + ((y + dy) + 1) * (size + 2)] + r < field[x + 1 + (y + 1) * (size + 2)]) {
+                field[x + 1 + (y + 1) * (size + 2)] = field[(x + dx) + 1 + ((y + dy) + 1) * (size + 2)] + r;
                 return true;
             }
             return false;
@@ -33,20 +30,16 @@ public class d15 {
         boolean shorter;
         do {
             shorter = false;
-            for (int x = 0; x < size && !shorter; x++) {
-                for (int y = 0; y < size && !shorter; y++) {
-                    shorter = neighbor.shorter(x, y, -1, 0) || neighbor.shorter(x, y, +1, 0) || neighbor.shorter(x, y, 0, -1) || neighbor.shorter(x, y, 0, +1);
+            for (int x = 0; x < size; x++) {
+                for (int y = 0; y < size; y++) {
+                    shorter = neighbor.shorter(x, y, -1, 0); if (shorter) break;
+                    shorter = neighbor.shorter(x, y, +1, 0); if (shorter) break;
+                    shorter = neighbor.shorter(x, y, 0, -1); if (shorter) break;
+                    shorter = neighbor.shorter(x, y, 0, +1); if (shorter) break;
                 }
             }
         } while (shorter);
-        return field.getOrDefault(new Position(size - 1, size - 1), Integer.MAX_VALUE / 2);
-    }
-
-    static class Position {
-        final int x, y;
-        Position(int x, int y) { this.x = x; this.y = y; }
-        public boolean equals(Object other) { return x == ((Position)other).x && y == ((Position)other).y; }
-        public int hashCode() { return Objects.hash(this.x, this.y); }
+        return field[size + (size) * (size + 2)];
     }
 
     interface RiskFunc {
