@@ -73,14 +73,14 @@ public class d16 {
             }
         }
 
-        int versions() { return version + subpackets.stream().mapToInt(p -> p.versions()).sum(); }
+        int versions() { return version + subpackets.stream().mapToInt(Packet::versions).sum(); }
 
         long calc() {
             switch (this.id) {
-                case 0: return subpackets.stream().mapToLong(p -> p.calc()).sum();
+                case 0: return subpackets.stream().mapToLong(Packet::calc).sum();
                 case 1: var vv = 1L; for (var p : subpackets) vv *= p.calc(); return vv;
-                case 2: return subpackets.stream().mapToLong(p -> p.calc()).min().getAsLong();
-                case 3: return subpackets.stream().mapToLong(p -> p.calc()).max().getAsLong();
+                case 2: return subpackets.stream().mapToLong(Packet::calc).min().orElseThrow();
+                case 3: return subpackets.stream().mapToLong(Packet::calc).max().orElseThrow();
                 case 4: return value;
                 case 5: return subpackets.get(0).calc() > subpackets.get(1).calc() ? 1 : 0;
                 case 6: return subpackets.get(0).calc() < subpackets.get(1).calc() ? 1 : 0;
