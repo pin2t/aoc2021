@@ -17,7 +17,7 @@ func path(size int, risk func(x int, y int) int) int {
 		}
 	}
 	field[1][1] = 0
-	neighbor := func(x int, y int, dx int, dy int) bool {
+	adjust := func(x int, y int, dx int, dy int) bool {
 		_risk := risk(x-1, y-1)
 		if field[y+dy][x+dx] != -1 && field[y+dy][x+dx]+_risk < field[y][x] {
 			field[y][x] = field[y+dy][x+dx] + _risk
@@ -29,20 +29,16 @@ func path(size int, risk func(x int, y int) int) int {
 		found = false
 		for y := 1; y <= size; y++ {
 			for x := 1; x <= size; x++ {
-				found = neighbor(x, y, -1, 0)
-				if found {
+				if found = adjust(x, y, -1, 0); found {
 					break
 				}
-				found = neighbor(x, y, +1, 0)
-				if found {
+				if found = adjust(x, y, +1, 0); found {
 					break
 				}
-				found = neighbor(x, y, 0, -1)
-				if found {
+				if found = adjust(x, y, 0, -1); found {
 					break
 				}
-				found = neighbor(x, y, 0, +1)
-				if found {
+				if found = adjust(x, y, 0, +1); found {
 					break
 				}
 			}
