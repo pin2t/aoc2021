@@ -30,15 +30,14 @@ public class d16 {
             this.id = Integer.parseInt(input.substring(3, 6), 2);
             if (this.id == 4) {
                 int pos = 6;
-                var val = "";
+                var builder = new StringBuilder();
                 while (input.startsWith("1", pos)) {
-                    val = val + input.substring(pos + 1, pos + 5);
+                    builder.append(input, pos + 1, pos + 5);
                     pos += 5;
                 }
-                val = val + input.substring(pos + 1, pos + 5);
-                pos += 5;
-                this.bits = input.substring(0, pos);
-                this.value = Long.parseLong(val, 2);
+                builder.append(input, pos + 1, pos + 5);
+                this.bits = input.substring(0, pos + 5);
+                this.value = Long.parseLong(builder.toString(), 2);
             } else {
                 this.value = 0;
                 int pos = 6;
