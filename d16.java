@@ -51,7 +51,6 @@ public class d16 {
                         this.subpackets.add(p);
                         pos += p.len();
                     }
-                    this.bits = input.substring(0, pos);
                 } else {
                     pos++;
                     var len = Integer.parseInt(input.substring(pos, pos + 15), 2);
@@ -64,8 +63,8 @@ public class d16 {
                         pp += p.len();
                     }
                     pos += len;
-                    this.bits = input.substring(0, pos);
                 }
+                this.bits = input.substring(0, pos);
             }
         }
 
