@@ -12,43 +12,49 @@ public class d16 {
         var reader = new BufferedReader(new InputStreamReader(System.in));
         var line = reader.readLine();
         for (int i = 0; i < line.length(); i++) {
-            builder.append(String.format("%4s", Integer.toBinaryString(Integer.parseInt(line.substring(i, i + 1), 16))).replace(' ', '0'));
+            builder.append(String.format("%4s",
+                    Integer.toBinaryString(Integer.parseInt(line.substring(i, i + 1), 16))).replace(' ', '0'));
         }
-        var packet = new Packet(builder.toString());
+        var packet = Packet.parse(builder.toString());
         out.println(packet.versions());
         out.println(packet.calc());
     }
     
     static class Packet {
-        final String bits;
         final long value;
-        final int id, version;
-        final List<Packet> subpackets = new ArrayList<>();
+        final int id, version, len;
+        final List<Packet> subpackets;
 
-        Packet(String input) {
-            this.version = Integer.parseInt(input.substring(0, 3), 2);
-            this.id = Integer.parseInt(input.substring(3, 6), 2);
-            if (this.id == 4) {
+        Packet(long val, int id, int ver, int l, List<Packet> subs) {
+            this.value = val;
+            this.id = id;
+            this.version = ver;
+            this.len = l;
+            this.subpackets = subs;
+        }
+
+        static Packet parse(String input) {
+            int version = Integer.parseInt(input.substring(0, 3), 2);
+            int id = Integer.parseInt(input.substring(3, 6), 2);
+            if (id == 4) {
                 int pos = 6;
-                var builder = new StringBuilder();
-                while (input.startsWith("1", pos)) {
-                    builder.append(input, pos + 1, pos + 5);
+                var val = new StringBuilder();
+                do {
+                    val.append(input, pos + 1, pos + 5);
                     pos += 5;
-                }
-                builder.append(input, pos + 1, pos + 5);
-                this.bits = input.substring(0, pos + 5);
-                this.value = Long.parseLong(builder.toString(), 2);
+                } while (input.startsWith("1", pos - 5));
+                return new Packet(Long.parseLong(val.toString(), 2), id, version, pos, new ArrayList<>());
             } else {
-                this.value = 0;
                 int pos = 6;
+                var subs = new ArrayList<Packet>();
                 if (input.startsWith("1", pos)) {
                     pos++;
                     var n = Integer.parseInt(input.substring(pos, pos + 11), 2);
                     pos += 11;
                     for (int i = 0; i < n; i++) {
-                        var p = new Packet(input.substring(pos));
-                        this.subpackets.add(p);
-                        pos += p.len();
+                        var p = parse(input.substring(pos));
+                        subs.add(p);
+                        pos += p.len;
                     }
                 } else {
                     pos++;
@@ -57,17 +63,16 @@ public class d16 {
                     int pp = 0;
                     String s = input.substring(pos, pos + len);
                     while (pp < s.length()) {
-                        var p = new Packet(s.substring(pp));
-                        this.subpackets.add(p);
-                        pp += p.len();
+                        var p = parse(s.substring(pp));
+                        subs.add(p);
+                        pp += p.len;
                     }
                     pos += len;
                 }
-                this.bits = input.substring(0, pos);
+                return new Packet(0, id, version, pos, subs);
             }
         }
 
-        int len() { return this.bits.length(); }
         int versions() { return version + subpackets.stream().mapToInt(p -> p.versions()).sum(); }
 
         long calc() {
