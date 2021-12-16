@@ -12,45 +12,49 @@ public class d12 {
         var edges = new ArrayList<Edge>();
         reader.lines().forEach(line -> edges.add(new Edge(line)));
         var paths = new AtomicInteger();
-        var path = new ArrayList<String>();
+        var path = new Path() {
+            boolean extend(String to) { return !this.contains(to) || to.charAt(0) >= 'A' && to.charAt(0) <= 'Z'; }
+        };
         path.add("start");
-        walk(paths, path, edges, (_path, to) -> (!_path.contains(to) || to.charAt(0) >= 'A' && to.charAt(0) <= 'Z'));
+        walk(paths, path, edges);
         out.println(paths.get());
         paths.set(0);
-        path = new ArrayList<String>();
-        path.add("start");
-        walk(paths, path, edges, (_path, to) -> {
-            if (to.equals("start")) {
-                return false;
-            }
-            _path.add(to);
-            var dup = 0;
-            for (String cave : _path) {
-                if (cave.charAt(0) >= 'a' && cave.charAt(0) <= 'z' && _path.stream().filter(c -> c.equals(cave)).count() >= 2) {
-                    dup++;
+        var path2 = new Path() {
+            boolean extend(String to) {
+                if (to.equals("start")) {
+                    return false;
                 }
+                this.add(to);
+                var dup = 0;
+                for (String cave : this) {
+                    if (cave.charAt(0) >= 'a' && cave.charAt(0) <= 'z' && this.stream().filter(c -> c.equals(cave)).count() >= 2) {
+                        dup++;
+                    }
+                }
+                this.remove(this.size() - 1);
+                return dup <= 2;
             }
-            _path.remove(_path.size() - 1);
-            return dup <= 2;
-        });
+        };
+        path2.add("start");
+        walk(paths, path2, edges);
         out.println(paths.get());
     }
 
-    static void walk(AtomicInteger paths, List<String> path, List<Edge> edges, StepFunc can) {
+    static void walk(AtomicInteger paths, Path path, List<Edge> edges) {
         var cave = path.get(path.size() - 1);
         if (cave.equals("end")) {
             paths.incrementAndGet();
             return;
         }
         for (var edge : edges) {
-            if (edge.from.equals(cave) && can.canStep(path, edge.to)) {
+            if (edge.from.equals(cave) && path.extend(edge.to)) {
                 path.add(edge.to);
-                walk(paths, path, edges, can);
+                walk(paths, path, edges);
                 path.remove(path.size() - 1);
             }
-            if (edge.to.equals(cave) && can.canStep(path, edge.from)) {
+            if (edge.to.equals(cave) && path.extend(edge.from)) {
                 path.add(edge.from);
-                walk(paths, path, edges, can);
+                walk(paths, path, edges);
                 path.remove(path.size() - 1);
             }
         }
@@ -66,7 +70,7 @@ public class d12 {
         }
     }
 
-    interface StepFunc {
-        boolean canStep(List<String> path, String to);
+    static abstract class Path extends ArrayList<String> {
+        abstract boolean extend(String to);
     }
 }
