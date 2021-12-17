@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-
 import static java.lang.System.out;
 
 public class d17 {
@@ -7,7 +5,7 @@ public class d17 {
         var scanner = new Scanner(System.in);
         var ints = scanner.readInts();
         int fromx = ints[0], tox = ints[1], fromy = ints[2], toy = ints[3];
-        var highs = new ArrayList<Integer>();
+        var highest = 0;
         var velocities = 0;
         for (int vx = 1; vx <= Math.max(fromx, tox); vx++) {
             for (int vy = -100; vy <= 100; vy++) {
@@ -19,13 +17,13 @@ public class d17 {
                     high = Math.max(high, py);
                     if (px >= Math.min(fromx, tox) && px <= Math.max(fromx, tox) && py >= Math.min(fromy, toy) && py <= Math.max(fromy, toy)) {
                         hit = true;
-                        highs.add(high);
+                        highest = Math.max(high, highest);
                         velocities++;
                     }
                 }
             }
         }
-        out.println(highs.stream().max(Integer::compareTo).get());
+        out.println(highest);
         out.println(velocities);
     }
 }
