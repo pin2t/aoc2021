@@ -5,7 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Scanner {
-    private static final Pattern num = Pattern.compile("\\d+");
+    private static final Pattern num = Pattern.compile("\\-?\\d+");
     private final BufferedInputStream in;
     private int c;
 

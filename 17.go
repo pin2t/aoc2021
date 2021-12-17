@@ -42,7 +42,7 @@ func main() {
 	target.fromy, _ = strconv.ParseInt(matches[2], 0, 0)
 	target.toy, _ = strconv.ParseInt(matches[3], 0, 0)
 	highest := int64(0)
-	hitvels := make([]velocity, 0)
+	hitvels := 0
 	v := velocity{}
 	for v.dx = int64(1); v.dx <= max(target.fromx, target.tox); v.dx++ {
 		for v.dy = int64(-100); v.dy <= int64(100); v.dy++ {
@@ -56,7 +56,7 @@ func main() {
 					highy = p.y
 				}
 				if target.hit(p) {
-					hitvels = append(hitvels, v)
+					hitvels++
 				}
 			}
 			if target.hit(p) && highy > highest {
@@ -64,5 +64,5 @@ func main() {
 			}
 		}
 	}
-	fmt.Println(highest, len(hitvels))
+	fmt.Println(highest, hitvels)
 }
