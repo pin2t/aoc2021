@@ -9,11 +9,11 @@ public class d15 {
     public static void main(String[] args) {
         var reader = new BufferedReader(new InputStreamReader(System.in));
         var risks = reader.lines().collect(Collectors.toList());
-        out.println(shortest(new Board() {
+        out.println(path(new Board() {
             public int size()             { return risks.size(); }
             public int risk(int x, int y) { return risks.get(y).charAt(x) - '0'; }
         }));
-        out.println(shortest(new Board() {
+        out.println(path(new Board() {
             public int size()             { return risks.size() * 5; }
             public int risk(int x, int y) {
                 var r = risks.get(y % risks.size()).charAt(x % risks.size()) - '0' + x / risks.size() + y / risks.size();
@@ -22,7 +22,7 @@ public class d15 {
         }));
     }
 
-    static int shortest(Board board) {
+    static int path(Board board) {
         var field = new int[(board.size() + 2)*(board.size() + 2)];
         Arrays.fill(field, Integer.MAX_VALUE / 2);
         field[(board.size() + 2) + 1] = 0;
@@ -34,18 +34,15 @@ public class d15 {
             }
             return false;
         };
-        boolean shorter;
-        do {
-            shorter = false;
-            for (int x = 0; x < board.size(); x++) {
-                for (int y = 0; y < board.size(); y++) {
-                    if (shorter = neighbors.adjust(x, y, -1, 0)) break;
-                    if (shorter = neighbors.adjust(x, y, +1, 0)) break;
-                    if (shorter = neighbors.adjust(x, y, 0, -1)) break;
-                    if (shorter = neighbors.adjust(x, y, 0, +1)) break;
-                }
+        l:
+        for (int x = 0; x < board.size(); x++) {
+            for (int y = 0; y < board.size(); y++) {
+                if (neighbors.adjust(x, y, -1, 0)) continue l;
+                if (neighbors.adjust(x, y, +1, 0)) continue l;
+                if (neighbors.adjust(x, y, 0, -1)) continue l;
+                if (neighbors.adjust(x, y, 0, +1)) continue l;
             }
-        } while (shorter);
+        }
         return field[board.size() + (board.size()) * (board.size() + 2)];
     }
 

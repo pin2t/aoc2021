@@ -25,22 +25,20 @@ func path(size int, risk func(x int, y int) int) int {
 		}
 		return false
 	}
-	for found := true; found; {
-		found = false
-		for y := 1; y <= size; y++ {
-			for x := 1; x <= size; x++ {
-				if found = adjust(x, y, -1, 0); found {
-					break
-				}
-				if found = adjust(x, y, +1, 0); found {
-					break
-				}
-				if found = adjust(x, y, 0, -1); found {
-					break
-				}
-				if found = adjust(x, y, 0, +1); found {
-					break
-				}
+found:
+	for y := 1; y <= size; y++ {
+		for x := 1; x <= size; x++ {
+			if adjust(x, y, -1, 0) {
+				goto found
+			}
+			if adjust(x, y, +1, 0) {
+				goto found
+			}
+			if adjust(x, y, 0, -1) {
+				goto found
+			}
+			if adjust(x, y, 0, +1) {
+				goto found
 			}
 		}
 	}

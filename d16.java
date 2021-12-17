@@ -25,7 +25,7 @@ public class d16 {
         final int id, version, len;
         final List<Packet> subpackets;
 
-        Packet(long val, int id, int ver, int l, List<Packet> subs) {
+        private Packet(long val, int id, int ver, int l, List<Packet> subs) {
             this.value = val;
             this.id = id;
             this.version = ver;
