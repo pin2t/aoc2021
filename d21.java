@@ -40,26 +40,18 @@ public class d21 {
                                 2+1+1, 2+1+2, 2+1+3, 2+2+1, 2+2+2, 2+2+3, 2+3+1, 2+3+2, 2+3+3,
                                 3+1+1, 3+1+2, 3+1+3, 3+2+1, 3+2+2, 3+2+3, 3+3+1, 3+3+2, 3+3+3};
         while (!states.isEmpty()) {
-            var entry = states.entrySet().stream().findFirst().orElseThrow();
-            var state = entry.getKey();
+            var e = states.entrySet().stream().findFirst().orElseThrow();
+            var state = e.getKey();
             states.remove(state);
-            if (state.values[4] == 1) {
-                for (var split : splits) {
-                    var pos1 = (state.values[0] + split - 1) % 10 + 1;
-                    if (state.values[2] + pos1 >= 21) {
-                        wins[0] += entry.getValue();
-                    } else {
-                        states.merge(new Tuple(pos1, state.values[1], state.values[2] + pos1, state.values[3], 2), entry.getValue(), Long::sum);
-                    }
-                }
-            } else {
-                for (var split : splits) {
-                    var pos2 = (state.values[1] + split - 1) % 10 + 1;
-                    if (state.values[3] + pos2 >= 21) {
-                        wins[1] += entry.getValue();
-                    } else {
-                        states.merge(new Tuple(state.values[0], pos2, state.values[2], state.values[3] + pos2, 1), entry.getValue(), Long::sum);
-                    }
+            for (var split : splits) {
+                var player = state.values[4];
+                var pos = (state.values[player - 1] + split - 1) % 10 + 1;
+                if (state.values[2 + player - 1] + pos >= 21) {
+                    wins[player - 1] += e.getValue();
+                } else {
+                    var t = player == 1 ? new Tuple(pos, state.values[1], state.values[2] + pos, state.values[3], 2):
+                                        new Tuple(state.values[0], pos, state.values[2], state.values[3] + pos, 1);
+                    states.merge(t, e.getValue(), Long::sum);
                 }
             }
         }
