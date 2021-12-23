@@ -7,11 +7,11 @@ import java.util.regex.Pattern;
 import static java.lang.System.out;
 
 public class d22 {
-    private static Pattern commandPtn = Pattern.compile(".*?x=(-?\\d+)\\.\\.(-?\\d+)\\,y=(-?\\d+)\\.\\.(-?\\d+)\\,z=(-?\\d+)\\.\\.(-?\\d+)");
+    private static final Pattern commandPtn = Pattern.compile(".*?x=(-?\\d+)\\.\\.(-?\\d+),y=(-?\\d+)\\.\\.(-?\\d+),z=(-?\\d+)\\.\\.(-?\\d+)");
 
     public static void main(String[] args) throws IOException {
         var reader = new BufferedReader(new InputStreamReader(System.in));
-        var on = new HashSet<Cube>();
+        var on = new HashSet<Tuple>();
         var cuboids = new ArrayList<Cuboid>();
         var part1 = new Cuboid(-50, 50, -50, 50, -50, 50, false);
         while (reader.ready()) {
@@ -26,9 +26,9 @@ public class d22 {
                     for (int y = p1c.y1; y <= p1c.y2; y++) {
                         for (int z = p1c.z1; z <= p1c.z2; z++) {
                             if (line.startsWith("on"))
-                                on.add(new Cube(x, y, z));
+                                on.add(new Tuple(x, y, z));
                             else
-                                on.remove(new Cube(x, y, z));
+                                on.remove(new Tuple(x, y, z));
                         }
                     }
                 }
@@ -49,15 +49,15 @@ public class d22 {
         out.println(cuboids.stream().mapToLong(c -> c.on ? c.cubes() : -c.cubes()).sum());
     }
 
-    static class Cube {
-        final int x, y, z;
+    static class Tuple {
+        final int[] values;
 
-        Cube(int x, int y, int z) {
-            this.x = x; this.y = y; this.z = z;
+        Tuple(int... values) {
+            this.values = values;
         }
 
-        public boolean equals(Object other) { return this.x == ((Cube) other).x && this.y == ((Cube) other).y && this.z == ((Cube) other).z; }
-        public int hashCode() { return Objects.hash(x, y, z); }
+        public boolean equals(Object o) { return Arrays.equals(this.values, ((Tuple) o).values); }
+        public int hashCode() { return Arrays.hashCode(this.values); }
     }
 
     static class Cuboid {
