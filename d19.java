@@ -55,7 +55,7 @@ public class d19 {
         for (Position beacon : beacons) {
             for (Position p : scanner.beacons) {
                 var mapped = scanner.beacons.stream().map(b -> b.move(beacon.x - p.x, beacon.y - p.y, beacon.z - p.z)).collect(Collectors.toList());
-                if (mapped.stream().filter(b -> beacons.contains(b)).count() >= 12) {
+                if (mapped.stream().filter(beacons::contains).count() >= 12) {
                     beacons.addAll(mapped);
                     scanner.pos = new Position(beacon.x - p.x, beacon.y - p.y, beacon.z - p.z);
                     return true;
