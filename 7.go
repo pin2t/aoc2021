@@ -7,7 +7,9 @@ import (
 )
 
 func main() {
-	pos := readInts(bufio.NewScanner(os.Stdin))
+	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Scan()
+	pos := readInts(scanner.Text())
 	maxpos := maxSlice(pos)
 	fuel := make([]int64, 0, maxpos+1)
 	fuel2 := make([]int64, 0, maxpos+1)

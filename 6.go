@@ -23,7 +23,9 @@ func simulate(count []int64, days int) int64 {
 }
 
 func main() {
-	ages := readInts(bufio.NewScanner(os.Stdin))
+	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Scan()
+	ages := readInts(scanner.Text())
 	count := make([]int64, 9)
 	for _, age := range ages {
 		count[age]++

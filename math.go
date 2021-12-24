@@ -10,6 +10,16 @@ func min(vars ...int64) int64 {
 	return result
 }
 
+func mini(vars ...int) int {
+	result := vars[0]
+	for _, i := range vars {
+		if result > i {
+			result = i
+		}
+	}
+	return result
+}
+
 func abs(a int64) int64 {
 	if a < 0 {
 		return -a
@@ -18,6 +28,16 @@ func abs(a int64) int64 {
 }
 
 func max(vars ...int64) int64 {
+	result := vars[0]
+	for _, i := range vars {
+		if result < i {
+			result = i
+		}
+	}
+	return result
+}
+
+func maxi(vars ...int) int {
 	result := vars[0]
 	for _, i := range vars {
 		if result < i {
