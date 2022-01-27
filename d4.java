@@ -8,21 +8,21 @@ import java.io.*;
 
 public class d4 {
     public static void main(String[] args) throws NumberFormatException, IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        List<Integer> numbers = new ArrayList<>();
+        var reader = new BufferedReader(new InputStreamReader(System.in));
+        var numbers = new ArrayList<Integer>();
         for (String s : reader.readLine().split(",")) {
             if (s != null && !s.isEmpty()) {
                 numbers.add(Integer.valueOf(s));
             }
         }
-        List<Board> boards = new ArrayList<>();
+        var boards = new ArrayList<Board>();
         while (reader.ready()) {
             reader.readLine();
             boards.add(new Board(reader));
         }
         int first = 0, last = 0, wins = 0;
-        for (Integer n : numbers) {
-            for (Board b : boards) {
+        for (var n : numbers) {
+            for (var b : boards) {
                 if (b.win()) {
                     continue;
                 }
@@ -41,20 +41,20 @@ public class d4 {
     }
 
     static class Board {
-        private static final int MARK = -1;
-        private final int size;
-        private final int[] numbers;
+        static final int MARK = -1;
+        final int size;
+        final int[] numbers;
 
         Board(BufferedReader reader) throws NumberFormatException, IOException {
-            String[] first = reader.readLine().strip().split("\\s+");
+            var first = reader.readLine().strip().split("\\s+");
             this.size = (int) stream(first).filter(v -> v != null && !v.isEmpty()).count();
             this.numbers = new int[this.size * this.size];
-            for (int c = 0; c < this.size; c++) {
+            for (var c = 0; c < this.size; c++) {
                 this.numbers[c] = Integer.parseInt(first[c]);
             }
-            for (int r = 1; r < this.size; r++) {
-                int c = 0;
-                for (String s : reader.readLine().strip().split("\\s+")) {
+            for (var r = 1; r < this.size; r++) {
+                var c = 0;
+                for (var s : reader.readLine().strip().split("\\s+")) {
                     this.numbers[r * this.size + c++] = Integer.parseInt(s);
                 }
             }
@@ -74,14 +74,14 @@ public class d4 {
 
         boolean win() {
             for (int r = 0; r < this.size; r++) {
-                boolean marked = true;
+                var marked = true;
                 for (int i = 0; i < this.size && marked; i++) {
                     if (this.numbers[r * this.size + i] != MARK) marked = false;
                 }
                 if (marked) return true;    
             }
             for (int c = 0; c < this.size; c++) {
-                boolean marked = true;
+                var marked = true;
                 for (int r = 0; r < this.size && marked; r++) {
                     if (this.numbers[r * this.size + c] != MARK) marked = false;
                 }

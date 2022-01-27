@@ -18,7 +18,7 @@ func zeros(values []string, bit int) int {
 }
 
 func filter(values []string, bit int, bitval int) []string {
-	result := make([]string, 0, 1000)
+	result := make([]string, 0, len(values))
 	for _, v := range values {
 		if v[bit] == byte(bitval)+48 {
 			result = append(result, v)

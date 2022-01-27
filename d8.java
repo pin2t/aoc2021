@@ -38,7 +38,7 @@ public class d8 {
                 }
                 if (valid.size() == 10) {
                     matcher = segments.matcher(parts[1]);
-                    int nn = 0;
+                    var nn = 0;
                     var rightFields = new ArrayList<String>();
                     while (matcher.find()) {
                         rightFields.add(matcher.group());

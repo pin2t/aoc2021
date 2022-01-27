@@ -18,7 +18,7 @@ public class d25 {
                 }
             }
         }
-        long step = 0, moved = 0;
+        int step = 0, moved = 0;        
         do {
             moved = 0; step++;
             Set<Pos> wstep = new HashSet<Pos>(), sstep = new HashSet<Pos>();
@@ -44,15 +44,19 @@ public class d25 {
         } while (moved > 0);
         out.println(step);
     }   
+}
 
-    static class Pos {
-        final int x, y;
+class Pos {
+    final int x, y;
 
-        Pos(int x, int y) {
-            this.x = x; this.y = y;
-        }
+    Pos(int x, int y) {
+        this.x = x; this.y = y;
+    }
 
-        public boolean equals(Object o) { return this.x == ((Pos)o).x && this.y == ((Pos)o).y; }
-        public int hashCode() { return Objects.hash(this.x, this.y); }
+    public boolean equals(Object o) { 
+        return this.x == ((Pos)o).x && this.y == ((Pos)o).y; 
+    }
+    public int hashCode() { 
+        return Objects.hash(this.x, this.y); 
     }
 }

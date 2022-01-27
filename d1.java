@@ -2,8 +2,8 @@ import static java.lang.System.out;
 
 public class d1 {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        int[] prev = new int[] {scanner.nextInt(), scanner.nextInt(), scanner.nextInt()};
+        var scanner = new Scanner(System.in);
+        var prev = new int[] {scanner.nextInt(), scanner.nextInt(), scanner.nextInt()};
         int result1 = 0, result2 = 0;
         if (prev[1] > prev[0]) result1++;
         if (prev[2] > prev[1]) result1++;

@@ -14,29 +14,30 @@ public class d18 {
         var reader = new BufferedReader(new InputStreamReader(System.in));
         var numbers = reader.lines().collect(Collectors.toList());
         var result = numbers.get(0);
-        for (int i = 1; i < numbers.size(); i++) {
-            result = add(result, numbers.get(i));
+        for (var i = 1; i < numbers.size(); i++) {
+            result = sum(result, numbers.get(i));
         }
         out.println(magnitude(result, new AtomicInteger(0)));
         var maxmag = 0;
-        for (int i = 1; i < numbers.size(); i++) {
-            for (int j = 1; j < numbers.size(); j++) {
+        for (var i = 1; i < numbers.size(); i++) {
+            for (var j = 1; j < numbers.size(); j++) {
                 if (i == j) continue;
-                maxmag = Math.max(maxmag, magnitude(add(numbers.get(i), numbers.get(j)), new AtomicInteger(0)));
+                maxmag = Math.max(maxmag, magnitude(sum(numbers.get(i), numbers.get(j)), new AtomicInteger(0)));
             }
         }
         out.println(maxmag);
     }
 
-    static String add(String a, String b) {
-        String n = "[" + a + "," + b + "]";
-        String r = reduce(n);
+    static String sum(String a, String b) {
+        var n = "[" + a + "," + b + "]";
+        var r = reduce(n);
         while (!r.equals(n)) {
             n = r;
             r = reduce(n);
         }
         return n;
     }
+
     static String reduce(String n) {
         int depth = 0;
         for (int pos = 0; pos < n.length(); pos++) {
@@ -58,8 +59,8 @@ public class d18 {
     static String explode(String n, int pos, Matcher matcher) {
         var left = Integer.parseInt(matcher.group(1));
         var right = Integer.parseInt(matcher.group(2));
-        String result = n.substring(0, pos) + "0" + n.substring(pos + matcher.end(2) + 1);
-        int p = pos + 1;
+        var result = n.substring(0, pos) + "0" + n.substring(pos + matcher.end(2) + 1);
+        var p = pos + 1;
         while (p < result.length() && !isdigit(result, p)) p++;
         if (p < result.length()) {
             result = replaceRegular(result, p, peekRegular(result, p) + right);

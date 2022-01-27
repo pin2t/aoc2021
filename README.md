@@ -3,15 +3,15 @@
 This repository stores small programs which solves Advent of Code 2021 puzzles. Using two languages (Go and Java) just for fun and comparison. In .txt files **my** input from adventofcode.com. Yours will be different. 
 
 ## Running go solutions
-`go run 1.go input.go math.go < 1.txt` 
+`go run 1.go input.go math.go < inputs/1.txt` 
 
 ## Running java solutions
 First compile dependency
 
 `javac Scanner.java`
 
-Then run pretty much as go solutions
+Then run 
 
-`java d1.java < 1.txt`
+`java d1.java < inputs/1.txt`
 
 This works for Java 11+ only

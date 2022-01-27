@@ -10,21 +10,15 @@ public class d21 {
         var pos2 = scanner.readInts()[1];
         var positions = new int[] {pos1, pos2};
         var scores = new int[] {0, 0};
-        var d = new AtomicInteger(1);
-        var rolls = new AtomicInteger(0);
-        Dice dice = (player) -> {
-            positions[player] += d.getAndIncrement(); if (d.get() > 100) d.addAndGet(-100);
-            positions[player] = (positions[player] - 1) % 10 + 1;
-            rolls.incrementAndGet();
-        };
+        var dice = new Dice(positions);
         for (var player = 0; scores[player % 2] < 1000 && scores[(player + 1) % 2] < 1000; player++) {
             dice.roll(player % 2); dice.roll(player % 2); dice.roll(player % 2);
             scores[player % 2] += positions[player % 2];
         }
         if (scores[0] >= 1000) {
-            out.println(scores[1] * rolls.get());
+            out.println(scores[1] * dice.rolls);
         } else {
-            out.println(scores[0] * rolls.get());
+            out.println(scores[0] * dice.rolls);
         }
         out.println(universes(new int[]{pos1, pos2}));
     }
@@ -47,27 +41,47 @@ public class d21 {
                 if (tuple.values[2 + player - 1] + pos >= 21) {
                     wins[player - 1] += e.getValue();
                 } else {
-                    var t = player == 1 ? new Tuple(pos, tuple.values[1], tuple.values[2] + pos, tuple.values[3], 2):
-                                        new Tuple(tuple.values[0], pos, tuple.values[2], tuple.values[3] + pos, 1);
+                    var t = player == 1 ? 
+                        new Tuple(pos, tuple.values[1], tuple.values[2] + pos, tuple.values[3], 2) :
+                        new Tuple(tuple.values[0], pos, tuple.values[2], tuple.values[3] + pos, 1);
                     tuples.merge(t, e.getValue(), Long::sum);
                 }
             }
         }
         return Math.max(wins[0], wins[1]);
     }
+}
 
-    interface Dice {
-        void roll(int player);
+class Dice  {
+    final int[] positions;
+    int rolls = 0;
+    int d = 1;
+
+    Dice(int[] positions) {
+        this.positions = positions;
     }
 
-    static class Tuple {
-        final int[] values;
-
-        Tuple(int... values) {
-            this.values = values;
+    void roll(int player) {
+        positions[player] += d++; 
+        if (d > 100) {
+            d -= 100;
         }
+        positions[player] = (positions[player] - 1) % 10 + 1;
+        rolls++;
+    }
+}
 
-        public boolean equals(Object o) { return Arrays.equals(this.values, ((Tuple) o).values); }
-        public int hashCode() { return Arrays.hashCode(this.values); }
+class Tuple {
+    final int[] values;
+
+    Tuple(int... values) {
+        this.values = values;
+    }
+
+    public boolean equals(Object o) { 
+        return Arrays.equals(this.values, ((Tuple) o).values); 
+    }
+    public int hashCode() { 
+        return Arrays.hashCode(this.values); 
     }
 }

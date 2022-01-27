@@ -7,13 +7,15 @@ import static java.lang.System.out;
 
 public class d3 {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        List<String> values = new ArrayList<>();
-        while (scanner.hasNext()) values.add(scanner.next().strip());
+        var scanner = new Scanner(System.in);
+        var values = new ArrayList<String>();
+        while (scanner.hasNext()) {
+            values.add(scanner.next().strip());
+        }
         int gamma = 0, epsilon = 0;
         for (int bit = 0; bit < values.get(0).length(); bit++) {
-            int bb = bit;
-            long zeros = values.stream().filter(v -> v.charAt(bb) == '0').count();
+            var bb = bit;
+            var zeros = values.stream().filter(v -> v.charAt(bb) == '0').count();
             if (zeros > values.size() - zeros) { 
                 gamma *= 2; 
                 epsilon = epsilon * 2 + 1; 
