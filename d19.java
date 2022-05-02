@@ -13,9 +13,9 @@ import static java.lang.System.out;
 public class d19 {
     public static void main(String[] args) throws IOException {
         var reader = new BufferedReader(new InputStreamReader(System.in));
-        var scanners = new ArrayList<Scanner>();
+        var scanners = new ArrayList<BeaconsScanner>();
         while (reader.ready()) {
-            scanners.add(Scanner.parse(reader));
+            scanners.add(BeaconsScanner.parse(reader));
         }
         var unique = new HashSet<>(scanners.remove(0).beacons);
         var processed = new HashSet<Integer>();
@@ -26,6 +26,7 @@ public class d19 {
                     processed.add(s.n);
                 }
             }
+            out.println("" + processed.size() + " " + scanners.size());
         }
         out.println(unique.size());
         var distances = new ArrayList<Integer>();
@@ -37,12 +38,12 @@ public class d19 {
         out.println(distances.stream().max(Integer::compareTo).get());
     }
 
-    static boolean matchAll(Set<Position> unique, Scanner scanner) {
+    static boolean matchAll(Set<Position> unique, BeaconsScanner scanner) {
         for (int rot = 0; rot < 4; rot++) {
             for (int dir = 0; dir < 6; dir++) {
-                int finalRot = rot;
-                int finalDir = dir;
-                var s = scanner.transform(p -> p.rotate(finalRot).direct(finalDir));
+                int _rot = rot;
+                int _dir = dir;
+                var s = scanner.transform(p -> p.rotate(_rot).direct(_dir));
                 if (match(unique, s)) {
                     scanner.pos = s.pos;
                     return true;
@@ -52,7 +53,7 @@ public class d19 {
         return false;
     }
 
-    static boolean match(Set<Position> beacons, Scanner scanner) {
+    static boolean match(Set<Position> beacons, BeaconsScanner scanner) {
         for (Position beacon : beacons) {
             for (Position p : scanner.beacons) {
                 var mapped = scanner.beacons.stream().map(b -> b.move(beacon.x - p.x, beacon.y - p.y, beacon.z - p.z)).collect(Collectors.toList());
@@ -67,17 +68,18 @@ public class d19 {
     }
 }
 
-class Scanner {
+class BeaconsScanner {
     private static final Pattern num = Pattern.compile("\\d+");
     final int n;
     final List<Position> beacons;
     Position pos = new Position(0, 0, 0);
 
-    Scanner(int n, List<Position> beacons) {
-        this.n = n; this.beacons = beacons;
+    BeaconsScanner(int n, List<Position> beacons) {
+        this.n = n; 
+        this.beacons = beacons;
     }
 
-    static Scanner parse(BufferedReader reader) throws IOException {
+    static BeaconsScanner parse(BufferedReader reader) throws IOException {
         String s = reader.readLine();
         if (s.startsWith("---")) {
             Matcher m = num.matcher(s);
@@ -89,13 +91,13 @@ class Scanner {
                 beacons.add(Position.parse(s));
                 s = reader.readLine();
             }
-            return new Scanner(n, beacons);
+            return new BeaconsScanner(n, beacons);
         }
         throw new RuntimeException("invalid input \"" + s + "\"");
     }
 
-    Scanner transform(Function<Position, Position> f) {
-        return new Scanner(this.n, this.beacons.stream().map(f).collect(Collectors.toList()));
+    BeaconsScanner transform(Function<Position, Position> f) {
+        return new BeaconsScanner(this.n, this.beacons.stream().map(f).collect(Collectors.toList()));
     }
 }
 

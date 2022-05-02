@@ -73,8 +73,12 @@ class Packet {
         }
     }
 
-    int versions() { 
-        return version + subpackets.stream().mapToInt(Packet::versions).sum(); 
+    int versions() {
+        int ver = version;
+        for (Packet p : subpackets) {
+            ver += p.versions(); 
+        }
+        return ver; 
     }
 
     long result() {

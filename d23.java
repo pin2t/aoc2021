@@ -3,6 +3,7 @@ import java.io.InputStreamReader;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.lang.Math.abs;
 import static java.lang.System.out;
 
 //
@@ -28,6 +29,7 @@ public class d23 {
 }
 
 class Amphipod {
+    static int[] units = new int[]{1, 10, 100, 1000};
     final char type;
     final int pos;          // 0,1,3,5,7,9,10 - hallway. 2,4,6,8 - room
     final int depth;        // 0 - hallway, 1,2 - depth in the room
@@ -41,14 +43,7 @@ class Amphipod {
     }
 
     int energy(int destpos, int destdepth) {
-        var unit = 10;
-        switch (type) {
-            case 'A': unit = 1; break;
-            case 'B': unit = 10; break;
-            case 'C': unit = 100; break;
-            case 'D': unit = 1000; break;
-        } 
-        return unit * (Math.abs(destpos - pos) + 1 + Math.abs(destdepth - depth));
+        return units[type - 'A'] * (abs(destpos - pos) + 1 + abs(destdepth - depth));
     }
 }
 

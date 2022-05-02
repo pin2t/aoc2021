@@ -2,7 +2,7 @@ import static java.lang.System.out;
 
 public class d1 {
     public static void main(String[] args) {
-        var scanner = new Scanner(System.in);
+        var scanner = new BeaconsScanner(System.in);
         var prev = new int[] {scanner.nextInt(), scanner.nextInt(), scanner.nextInt()};
         int result1 = 0, result2 = 0;
         if (prev[1] > prev[0]) result1++;

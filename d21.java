@@ -5,7 +5,7 @@ import static java.lang.System.out;
 
 public class d21 {
     public static void main(String[] args) {
-        var scanner = new Scanner(System.in);
+        var scanner = new BeaconsScanner(System.in);
         var pos1 = scanner.readInts()[1];
         var pos2 = scanner.readInts()[1];
         var positions = new int[] {pos1, pos2};

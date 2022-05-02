@@ -2,7 +2,7 @@ import static java.lang.System.out;
 
 public class d17 {
     public static void main(String[] args) {
-        var scanner = new Scanner(System.in);
+        var scanner = new BeaconsScanner(System.in);
         var ints = scanner.readInts();
         int fromx = ints[0], tox = ints[1], fromy = ints[2], toy = ints[3];
         var highest = 0;

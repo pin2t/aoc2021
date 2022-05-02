@@ -4,7 +4,7 @@ import static java.lang.System.out;
 
 public class d7 {
     public static void main(String[] args) throws IOException {
-        var scanner = new Scanner(System.in);
+        var scanner = new BeaconsScanner(System.in);
         var pos = scanner.readInts();
         var maxpos = Arrays.stream(pos).max().getAsInt();
         var fuel = new int[maxpos + 1];

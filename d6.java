@@ -4,7 +4,7 @@ import static java.lang.System.out;
 
 public class d6 {
     public static void main(String[] args) throws IOException {
-        var scanner = new Scanner(System.in);
+        var scanner = new BeaconsScanner(System.in);
         var pos = scanner.readInts();
         var counts = new long[9];
         for (var p : pos) {
