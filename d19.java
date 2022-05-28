@@ -18,53 +18,58 @@ public class d19 {
             scanners.add(BeaconsScanner.parse(reader));
         }
         var unique = new HashSet<>(scanners.remove(0).beacons);
-        var processed = new HashSet<Integer>();
-        processed.add(0);
-        while (processed.size() < scanners.size()) {
+        var positions = new Position[scanners.size()];
+        var processed = new int[scanners.size()];
+        Arrays.fill(processed, 0);
+        while (Arrays.stream(processed).filter(p -> p > 0).count() < scanners.size()) {
             for (var s : scanners) {
-                if (!processed.contains(s.n) && matchAll(unique, s)) {
-                    processed.add(s.n);
+                if (processed[s.n] > 0) {
+                    continue;
+                }
+                Optional<Position> pos = matchAll(unique, s);
+                if (pos.isPresent()) {
+                    processed[s.n] = 1;
+                    positions[s.n] = pos.get();
                 }
             }
-            out.println("" + processed.size() + " " + scanners.size());
+            out.println("" + Arrays.stream(processed).filter(p -> p > 0).count() + " " + scanners.size());
         }
         out.println(unique.size());
         var distances = new ArrayList<Integer>();
         for (int i = 0; i < scanners.size(); ++i) {
             for (int j = i+1; j < scanners.size(); ++j) {
-                distances.add(scanners.get(i).pos.manhattan(scanners.get(j).pos));
+                distances.add(positions[i].manhattan(positions[j]));
             }
         }
         out.println(distances.stream().max(Integer::compareTo).get());
     }
 
-    static boolean matchAll(Set<Position> unique, BeaconsScanner scanner) {
+    static Optional<Position> matchAll(Set<Position> unique, BeaconsScanner scanner) {
         for (int rot = 0; rot < 4; rot++) {
             for (int dir = 0; dir < 6; dir++) {
                 int _rot = rot;
                 int _dir = dir;
                 var s = scanner.transform(p -> p.rotate(_rot).direct(_dir));
-                if (match(unique, s)) {
-                    scanner.pos = s.pos;
-                    return true;
+                Optional<Position> pos = match(unique, s);
+                if (pos.isPresent()) {
+                    return pos;
                 }
             }
         }
-        return false;
+        return Optional.empty();
     }
 
-    static boolean match(Set<Position> beacons, BeaconsScanner scanner) {
+    static Optional<Position> match(Set<Position> beacons, BeaconsScanner scanner) {
         for (Position beacon : beacons) {
             for (Position p : scanner.beacons) {
                 var mapped = scanner.beacons.stream().map(b -> b.move(beacon.x - p.x, beacon.y - p.y, beacon.z - p.z)).collect(Collectors.toList());
                 if (mapped.stream().filter(beacons::contains).count() >= 12) {
                     beacons.addAll(mapped);
-                    scanner.pos = new Position(beacon.x - p.x, beacon.y - p.y, beacon.z - p.z);
-                    return true;
+                    return Optional.of(new Position(beacon.x - p.x, beacon.y - p.y, beacon.z - p.z));
                 }
             }
         }
-        return false;
+        return Optional.empty();
     }
 }
 
@@ -72,7 +77,6 @@ class BeaconsScanner {
     private static final Pattern num = Pattern.compile("\\d+");
     final int n;
     final List<Position> beacons;
-    Position pos = new Position(0, 0, 0);
 
     BeaconsScanner(int n, List<Position> beacons) {
         this.n = n; 
@@ -80,7 +84,7 @@ class BeaconsScanner {
     }
 
     static BeaconsScanner parse(BufferedReader reader) throws IOException {
-        String s = reader.readLine();
+        var s = reader.readLine();
         if (s.startsWith("---")) {
             Matcher m = num.matcher(s);
             m.find();
