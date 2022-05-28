@@ -50,7 +50,7 @@ func (p pos) direct(to int) pos {
 }
 
 func (p pos) distance(other pos) int {
-	return int(abs(int64(p.x - other.x)) + abs(int64(p.y - other.y) + abs(int64(p.z - other.z))))
+	return int(abs(int64(p.x-other.x)) + abs(int64(p.y-other.y)+abs(int64(p.z-other.z))))
 }
 
 func parse(s string) pos {
@@ -67,16 +67,16 @@ type scanner struct {
 	beacons []pos
 }
 
-var reNum = regexp.MustCompile("\\d+")
+var reNum = regexp.MustCompile("\\-?\\d+")
 
 func parseScanner(s *bufio.Scanner) (scanner, error) {
 	s.Scan()
 	line := s.Text()
-	if line[:3] != "---" {
+	if line[0:3] != "---" {
 		return scanner{}, fmt.Errorf("invalid input ", line)
 	}
 	matches := reNum.FindAllString(line, -1)
-	n, _ := strconv.ParseInt(matches, 10, 332)
+	n, _ := strconv.ParseInt(matches[0], 10, 32)
 	beacons := make([]pos, 64)
 	s.Scan()
 	line = s.Text()
@@ -89,11 +89,48 @@ func parseScanner(s *bufio.Scanner) (scanner, error) {
 }
 
 func match(beacons map[pos]bool, s scanner) bool {
+	for beacon, _ := range beacons {
+		for _, p := range s.beacons {
+			mapped := []pos{}
+			fit := 0
+			for _, b := range s.beacons {
+				mb := b.move(beacon.x-p.x, beacon.y-p.y, beacon.z-p.z)
+				mapped = append(mapped, mb)
+				if beacons[mb] {
+					fit++
+				}
+			}
+			if fit >= 12 {
+				for _, m := range mapped {
+					beacons[m] = true
+				}
+				s.p = pos{beacon.x - p.x, beacon.y - p.y, beacon.z - p.z}
+				return true
+			}
+		}
+	}
+	return false
+}
 
+func (s scanner) transform(rotation, direction int) scanner {
+	t := scanner{s.n, s.p, []pos{}}
+	for _, beacon := range s.beacons {
+		t.beacons = append(t.beacons, beacon.rotate(rotation).direct(direction))
+	}
+	return t
 }
 
 func matchAll(beacons map[pos]bool, s scanner) bool {
-
+	for rotation := 0; rotation < 4; rotation++ {
+		for direction := 0; direction < 6; direction++ {
+			ts := s.transform(rotation, direction)
+			if match(beacons, ts) {
+				s.p = ts.p
+				return true
+			}
+		}
+	}
+	return false
 }
 
 func main() {

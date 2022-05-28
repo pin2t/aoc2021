@@ -23,16 +23,18 @@ public class d19 {
         Arrays.fill(processed, 0);
         while (Arrays.stream(processed).filter(p -> p > 0).count() < scanners.size()) {
             for (var s : scanners) {
-                if (processed[s.n] > 0) {
+                if (processed[s.n - 1] > 0) {
                     continue;
                 }
                 Optional<Position> pos = matchAll(unique, s);
                 if (pos.isPresent()) {
-                    processed[s.n] = 1;
-                    positions[s.n] = pos.get();
+                    processed[s.n - 1] = 1;
+                    positions[s.n - 1] = pos.get();
                 }
             }
-            out.println("" + Arrays.stream(processed).filter(p -> p > 0).count() + " " + scanners.size());
+            out.printf("processed %d of %d\n", 
+                Arrays.stream(processed).filter(p -> p > 0).count(),
+                scanners.size());
         }
         out.println(unique.size());
         var distances = new ArrayList<Integer>();
@@ -74,7 +76,7 @@ public class d19 {
 }
 
 class BeaconsScanner {
-    private static final Pattern num = Pattern.compile("\\d+");
+    private static final Pattern num = Pattern.compile("\\-?\\d+");
     final int n;
     final List<Position> beacons;
 
