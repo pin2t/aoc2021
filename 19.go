@@ -70,17 +70,16 @@ type scanner struct {
 var reNum = regexp.MustCompile("\\-?\\d+")
 
 func parseScanner(s *bufio.Scanner) (scanner, error) {
-	s.Scan()
 	line := s.Text()
 	if line[0:3] != "---" {
 		return scanner{}, fmt.Errorf("invalid input ", line)
 	}
 	matches := reNum.FindAllString(line, -1)
 	n, _ := strconv.ParseInt(matches[0], 10, 32)
-	beacons := make([]pos, 64)
+	beacons := []pos{}
 	s.Scan()
 	line = s.Text()
-	for line != "" && len(line) > 0 {
+	for line != "" && len(line) > 0 && len(reNum.FindAllString(line, -1)) > 1 {
 		beacons = append(beacons, parse(line))
 		s.Scan()
 		line = s.Text()
