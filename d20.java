@@ -13,15 +13,9 @@ public class d20 {
         var algo = reader.readLine();
         reader.readLine();
         var field = Field.parse(reader);
-        field.print();
         out.println(field.index(4, 4));
         field = field.enhance(algo);
-        out.println();
-        field.print();
         field = field.enhance(algo);
-        out.println();
-        field.print();
-        out.println();
         out.println(field.pixels());
     }
 }
@@ -77,7 +71,9 @@ class Field {
     }
 
     int pixels() {
-        return this.rows.stream().mapToInt(r -> (int)r.chars().filter(c -> c == '#').count()).sum();
+        return this.rows.stream()
+            .mapToInt(r -> (int)r.chars().filter(c -> c == '#').count())
+            .sum();
     }
 
     void print() {

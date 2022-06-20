@@ -153,6 +153,8 @@ func main() {
 				processed[sc.n] = true
 			}
 		}
+		fmt.Println("processed", len(processed), "of", len(scanners), 
+			"unique beacons", len(unique))
 	}
 	fmt.Println(len(unique))
 	distance := 0

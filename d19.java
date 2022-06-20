@@ -32,9 +32,9 @@ public class d19 {
                     positions[s.n - 1] = pos.get();
                 }
             }
-            out.printf("processed %d of %d\n", 
+            out.printf("processed %d of %d, unique beacons %d\n", 
                 Arrays.stream(processed).filter(p -> p > 0).count(),
-                scanners.size());
+                scanners.size(), unique.size());
         }
         out.println(unique.size());
         var distances = new ArrayList<Integer>();

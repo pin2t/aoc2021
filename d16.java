@@ -23,14 +23,14 @@ public class d16 {
 class Packet {
     final long value;
     final int id, version, len;
-    final List<Packet> subpackets;
+    final List<Packet> subs;
 
     private Packet(long val, int id, int ver, int l, List<Packet> subs) {
         this.value = val;
         this.id = id;
         this.version = ver;
         this.len = l;
-        this.subpackets = subs;
+        this.subs = subs;
     }
 
     static Packet parse(String input) {
@@ -75,7 +75,7 @@ class Packet {
 
     int versions() {
         int ver = version;
-        for (Packet p : subpackets) {
+        for (Packet p : subs) {
             ver += p.versions(); 
         }
         return ver; 
@@ -83,14 +83,14 @@ class Packet {
 
     long result() {
         switch (this.id) {
-            case 0: return subpackets.stream().mapToLong(Packet::result).sum();
-            case 1: var vv = 1L; for (var p : subpackets) vv *= p.result(); return vv;
-            case 2: return subpackets.stream().mapToLong(Packet::result).min().orElseThrow();
-            case 3: return subpackets.stream().mapToLong(Packet::result).max().orElseThrow();
+            case 0: return subs.stream().mapToLong(Packet::result).sum();
+            case 1: var vv = 1L; for (var p : subs) vv *= p.result(); return vv;
+            case 2: return subs.stream().mapToLong(Packet::result).min().orElseThrow();
+            case 3: return subs.stream().mapToLong(Packet::result).max().orElseThrow();
             case 4: return value;
-            case 5: return subpackets.get(0).result() > subpackets.get(1).result() ? 1 : 0;
-            case 6: return subpackets.get(0).result() < subpackets.get(1).result() ? 1 : 0;
-            case 7: return subpackets.get(0).result() == subpackets.get(1).result() ? 1 : 0;
+            case 5: return subs.get(0).result() > subs.get(1).result() ? 1 : 0;
+            case 6: return subs.get(0).result() < subs.get(1).result() ? 1 : 0;
+            case 7: return subs.get(0).result() == subs.get(1).result() ? 1 : 0;
         }
         throw new RuntimeException("invalid packet id " + id);
     }
