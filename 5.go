@@ -41,16 +41,6 @@ func main() {
 			}
 		}
 	}
-	// for y := int64(0); y <= size; y++ {
-	// 	for x := int64(0); x <= size; x++ {
-	// 		if board2[y*int64(cap)+x] == 0 {
-	// 			fmt.Print(".")
-	// 		} else {
-	// 			fmt.Print(board2[y*int64(cap)+x])
-	// 		}
-	// 	}
-	// 	fmt.Println()
-	// }
 	result, result2 := 0, 0
 	for x := int64(0); x <= size; x++ {
 		for y := int64(0); y <= size; y++ {

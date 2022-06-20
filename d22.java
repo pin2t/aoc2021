@@ -7,8 +7,6 @@ import java.util.regex.Pattern;
 import static java.lang.System.out;
 
 public class d22 {
-    static final Pattern commandPtn = Pattern.compile(".*?x=(-?\\d+)\\.\\.(-?\\d+),y=(-?\\d+)\\.\\.(-?\\d+),z=(-?\\d+)\\.\\.(-?\\d+)");
-
     public static void main(String[] args) throws IOException {
         var reader = new BufferedReader(new InputStreamReader(System.in));
         var on = new HashSet<Tuple>();
@@ -16,9 +14,7 @@ public class d22 {
         var part1 = new Cuboid(-50, 50, -50, 50, -50, 50, false);
         while (reader.ready()) {
             var line = reader.readLine();
-            var m = commandPtn.matcher(line);
-            m.matches();
-            var c = Cuboid.parse(line);
+            var c = new Cuboid(line);
             // part 1
             if (c.intersect(part1)) {
                 var p1c = c.intersection(part1);
@@ -66,22 +62,31 @@ class Tuple {
 }
 
 class Cuboid {
+    static final Pattern commandPtn = Pattern.compile(".*?x=(-?\\d+)\\.\\.(-?\\d+),y=(-?\\d+)\\.\\.(-?\\d+),z=(-?\\d+)\\.\\.(-?\\d+)");
+
     final int x1, x2, y1, y2, z1, z2;
     final boolean on;
 
     Cuboid(int x1, int x2, int y1, int y2, int z1, int z2, boolean on) {
-        this.x1 = Math.min(x1, x2); this.x2 = Math.max(x1, x2);
-        this.y1 = Math.min(y1, y2); this.y2 = Math.max(y1, y2);
-        this.z1 = Math.min(z1, z2); this.z2 = Math.max(z1, z2);
+        this.x1 = Math.min(x1, x2); 
+        this.x2 = Math.max(x1, x2);
+        this.y1 = Math.min(y1, y2); 
+        this.y2 = Math.max(y1, y2);
+        this.z1 = Math.min(z1, z2); 
+        this.z2 = Math.max(z1, z2);
         this.on = on;
     }
 
-    static Cuboid parse(String s) {
-        var m = d22.commandPtn.matcher(s);
+    Cuboid(String s) {
+        var m = commandPtn.matcher(s);
         m.matches();
-        return new Cuboid(Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2)),
-                           Integer.parseInt(m.group(3)), Integer.parseInt(m.group(4)),
-                           Integer.parseInt(m.group(5)), Integer.parseInt(m.group(6)), s.startsWith("on"));
+        this.x1 = Integer.parseInt(m.group(1));
+        this.x2 = Integer.parseInt(m.group(2));
+        this.y1 = Integer.parseInt(m.group(3));
+        this.y2 = Integer.parseInt(m.group(4));
+        this.z1 = Integer.parseInt(m.group(5));
+        this.z2 = Integer.parseInt(m.group(6));
+        this.on = s.startsWith("on");
     }
 
     Cuboid intersection(Cuboid other) {

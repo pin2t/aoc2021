@@ -1,7 +1,6 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
 import static java.lang.System.out;
@@ -9,11 +8,10 @@ import static java.lang.System.out;
 public class d8 {
     public static void main(String[] args) {
         var reader = new BufferedReader(new InputStreamReader(System.in));
-        var numbers = new AtomicInteger(0);
+        var numbers = new int[]{0};
         var segments = Pattern.compile("[a-z]+");
         var decoded = new ArrayList<Integer>();
-        var mappings = new ArrayList<String>();
-        permutations(mappings, "", "abcdefg");
+        var mappings = new Permutations("abcdefg");
         var templates = new String[] {"abcefg", "cf", "acdeg", "acdfg", "bcdf", "abdfg", "abdefg", "acf", "abcdefg", "abcdfg"}; 
         reader.lines().forEach(line -> {
             var parts = line.split("\\|");
@@ -21,7 +19,7 @@ public class d8 {
             while (matcher.find()) {
                 var l = matcher.group().length();
                 if (l == 2 || l == 3 || l == 4 || l == 7) {
-                    numbers.incrementAndGet();
+                    numbers[0]++;
                 }
             }
             var numSegments = new ArrayList<String>();
@@ -54,7 +52,7 @@ public class d8 {
                 }
             }
         });
-        out.println(numbers.get());
+        out.println(numbers[0]);
         out.println(decoded.stream().mapToInt(Integer::intValue).sum());
     }
 
@@ -66,15 +64,21 @@ public class d8 {
         Arrays.sort(result);
         return new String(result);
     }
+}
 
-    static void permutations(List<String> mappings, String prefix, String str) {
+class Permutations extends ArrayList<String> {
+    Permutations(String s) {
+        generate("", s);
+    }
+
+    private void generate(String prefix, String str) {
         int n = str.length();
         if (n == 0) {
-            mappings.add(prefix);
+            this.add(prefix);
         } else {
             for (int i = 0; i < n; i++) {
-                permutations(mappings, prefix + str.charAt(i), str.substring(0, i) + str.substring(i+1, n));
+                generate(prefix + str.charAt(i), str.substring(0, i) + str.substring(i+1, n));
             }
         }
     }    
-}
+} 
