@@ -9,20 +9,42 @@ public class d15 {
     public static void main(String[] args) {
         var reader = new BufferedReader(new InputStreamReader(System.in));
         var risks = reader.lines().collect(Collectors.toList());
-        out.println(path(new Board() {
-            public int size()             { return risks.size(); }
-            public int risk(int x, int y) { return risks.get(y).charAt(x) - '0'; }
-        }));
-        out.println(path(new Board() {
-            public int size()             { return risks.size() * 5; }
-            public int risk(int x, int y) {
-                var r = risks.get(y % risks.size()).charAt(x % risks.size()) - '0' + x / risks.size() + y / risks.size();
-                return r > 9 ? r - 9 : r;
-            }
-        }));
+        out.println(
+            new Path(
+                new Board() {
+                    public int size()             { return risks.size(); }
+                    public int risk(int x, int y) { return risks.get(y).charAt(x) - '0'; }
+                }
+            ).length());
+        out.println(
+            new Path(
+                new Board() {
+                    public int size()             { return risks.size() * 5; }
+                    public int risk(int x, int y) {
+                        var r = risks.get(y % risks.size()).charAt(x % risks.size()) - '0' + x / risks.size() + y / risks.size();
+                        return r > 9 ? r - 9 : r;
+                    }
+                }
+            ).length());
+    }
+}
+
+interface Board {
+    int size();
+    int risk(int x, int y);
+}
+interface Neighbors {
+    boolean adjust(int x, int y, int dx, int dy);
+}
+
+class Path {
+    final Board board;
+
+    Path(Board board) {
+        this.board = board;
     }
 
-    static int path(Board board) {
+    int length() {
         var field = new int[(board.size() + 2)*(board.size() + 2)];
         Arrays.fill(field, Integer.MAX_VALUE / 2);
         field[(board.size() + 2) + 1] = 0;
@@ -44,13 +66,5 @@ public class d15 {
             }
         }
         return field[board.size() + (board.size()) * (board.size() + 2)];
-    }
-
-    interface Board {
-        int size();
-        int risk(int x, int y);
-    }
-    interface Neighbors {
-        boolean adjust(int x, int y, int dx, int dy);
     }
 }

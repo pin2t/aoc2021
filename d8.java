@@ -80,5 +80,5 @@ class Permutations extends ArrayList<String> {
                 generate(prefix + str.charAt(i), str.substring(0, i) + str.substring(i+1, n));
             }
         }
-    }    
+    }
 } 
