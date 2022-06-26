@@ -28,16 +28,22 @@ public class d23 {
         var initial = State.parse(lines);
         var queue = new PriorityQueue<State>(Comparator.comparingInt(s -> s.energy));
         queue.add(initial);
+        var processed = new HashSet<State>();
         while (!queue.isEmpty()) {
             var state = queue.poll();
-            out.print("\rcurrent energy " + state.energy + " queue " + queue.size());
             if (state.finished()) {
-                out.println("finished state energy " + state.energy);
-                state.print(System.out);
+                out.println(state.energy);
+//                out.println("\r final state " + Arrays.stream(state.amphipods).mapToObj(Integer::toString).collect(Collectors.joining(" ")) + " energy " + state.energy);
+//                state.print(System.out);
                 break;
             }
+            if (!processed.add(state))
+                continue;
+//            out.println();
+//            state.print(out);
             for (State s : state.step())
-                queue.add(s);
+                if (!processed.contains(s))
+                    queue.add(s);
         }
     }
 
@@ -49,6 +55,14 @@ public class d23 {
                 "###.#.#.#.###",
                 "  #.#.#.#.#  ",
                 "  #########  ");
+        static final List<String> template2 = Arrays.asList(
+                "#############",
+                "#...........#",
+                "###.#.#.#.###",
+                "  #.#.#.#.#  ",
+                "  #.#.#.#.#  ",
+                "  #.#.#.#.#  ",
+                "  #########  ");
         static final int[] hallwayDests = new int[]{0,1,3,5,7,9,10};
         // flatten amphipods storage a1.pos, a1.depth, a2.pos, a2.depth, b1.pos ...
         final int[] amphipods;
@@ -57,8 +71,18 @@ public class d23 {
         private State(int[] a, int e) {
 //            out.println("state " + Arrays.stream(a).mapToObj(Integer::toString).collect(Collectors.joining(" ")) + " energy " + e);
             this.amphipods = a;
-            this.maxDepth = a.length / 4;
+            this.maxDepth = a.length / 8;
             this.energy = e;
+            for (int i = 0; i < a.length; i++) {
+                if (i % 2 == 0 && a[i] > 10)
+                    throw new RuntimeException("invalid state " + Arrays.stream(a).mapToObj(Integer::toString).collect(Collectors.joining(" ")));
+                if (i % 2 == 1 && (a[i - 1] == 2 || a[i - 1] == 4 || a[i - 1] == 6 || a[i - 1] == 8) && (a[i] < 1 || a[i] > this.maxDepth))
+                    throw new RuntimeException("invalid depth " + a[i] + " should be between 1 and " + this.maxDepth + " state " +
+                            Arrays.stream(a).mapToObj(Integer::toString).collect(Collectors.joining(" ")));
+                if (i % 2 == 1 && a[i] > this.maxDepth)
+                    throw new RuntimeException("invalid depth " + a[i] + " should be between 0 and " + this.maxDepth + " state " +
+                            Arrays.stream(a).mapToObj(Integer::toString).collect(Collectors.joining(" ")));
+            }
         }
 
         static State parse(List<String> lines) {
@@ -76,7 +100,8 @@ public class d23 {
         }
 
         void print(PrintStream output) {
-            var render = new ArrayList<>(template);
+//            output.println("amphipods " + this.count() + " max depth " + this.maxDepth);
+            var render = this.count() > 8 ? new ArrayList<>(template2) : new ArrayList<>(template);
             this.forEach((type, pos, depth) -> {
                 String row = render.get(depth + 1);
                 render.set(depth + 1, row.substring(0, pos + 1) + type + row.substring(pos + 2));
@@ -121,10 +146,10 @@ public class d23 {
             var moved = Arrays.copyOf(this.amphipods, this.amphipods.length);
             var energy = this.energy;
             if (dest == 2 || dest == 4 || dest == 6 || dest == 8) {
-                var destDepth = new int[]{this.maxDepth + 1};
+                var destDepth = new int[]{this.maxDepth};
                 this.forEach((type, pos, depth) -> {
-                    if (pos == dest && depth < destDepth[0])
-                        destDepth[0] = depth;
+                    if (pos == dest && depth <= destDepth[0])
+                        destDepth[0] = depth - 1;
                 });
                 energy += units[this.type(a) - 'A'] * (abs(dest - this.pos(a)) + 1 + abs(destDepth[0] - this.depth(a)));
                 moved[a * 2] = dest;
@@ -195,7 +220,7 @@ public class d23 {
         }
 
         public int hashCode() {
-            return Objects.hash(this.amphipods);
+            return Arrays.hashCode(this.amphipods);
         }
     }
 
