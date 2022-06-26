@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-type snailfishNumber interface {
+type number interface {
 	magnitude() int
 }
 
@@ -18,20 +18,20 @@ func (r regular) magnitude() int {
 }
 
 type pair struct {
-	left, right *snailfishNumber
+	left, right *number
 }
 
 func (p pair) magnitude() int {
 	return 3*(*p.left).magnitude() + 2*(*p.right).magnitude()
 }
 
-func parse(s string) snailfishNumber {
+func parse(s string) number {
 
 }
 
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
-	numbers := make([]snailfishNumber, 0, 100)
+	numbers := make([]number, 0, 100)
 	for scanner.Scan() {
 		numbers = append(numbers, parse(scanner.Text()))
 	}
