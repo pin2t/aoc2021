@@ -47,20 +47,20 @@ public class d25 {
             west = wstep; south = sstep;
         } while (moved);
         out.println(step);
-    }   
-}
-
-class Pos {
-    final int x, y;
-
-    Pos(int x, int y) {
-        this.x = x; this.y = y;
     }
 
-    public boolean equals(Object o) { 
-        return this.x == ((Pos)o).x && this.y == ((Pos)o).y; 
-    }
-    public int hashCode() { 
-        return Objects.hash(this.x, this.y); 
+    static class Pos {
+        final int x, y;
+
+        Pos(int x, int y) {
+            this.x = x; this.y = y;
+        }
+
+        public boolean equals(Object o) {
+            return this.x == ((Pos)o).x && this.y == ((Pos)o).y;
+        }
+        public int hashCode() {
+            return Objects.hash(this.x, this.y);
+        }
     }
 }

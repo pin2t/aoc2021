@@ -30,22 +30,11 @@ public class d23 {
         out.println("Sample finished state " + finished.finished());
         finished.print(out);
         var queue = new PriorityQueue<State>(Comparator.comparingInt(s -> s.energy));
-//        var queue = new ArrayDeque<State>();
-        queue.offer(initial);
-//        for (State s : initial.step()) {
-//            out.println("One step state");
-//            s.print(System.out);
-//        }
+        queue.add(initial);
         var processed = new HashSet<State>();
         while (!queue.isEmpty()) {
             var state = queue.poll();
-//            out.print("\rcurrent energy " + state.energy + " processed " + processed.size() + " queue " + queue.size());
             out.print("\rcurrent energy " + state.energy + " queue " + queue.size());
-//            state.print(out);
-            if (state.energy == 15322) {
-                out.println("\rstate " + state.energy + " finished " + state.finished());
-                state.print(out);
-            }
             if (state.finished()) {
                 out.println("finished state energy " + state.energy);
                 state.print(System.out);
@@ -111,7 +100,7 @@ public class d23 {
         final Amphipod[] amphipods;
         final int maxDepth, energy;
 
-        State(Amphipod[] a, int e) {
+        private State(Amphipod[] a, int e) {
             this.amphipods = a;
             this.maxDepth = a.length / 4;
             this.energy = e;
