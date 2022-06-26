@@ -18,39 +18,65 @@ public class d23 {
         var reader = new BufferedReader(new InputStreamReader(System.in));
         var lines = reader.lines().collect(Collectors.toList());
         var initial = State.parse(lines);
+        out.println("Initial state");
         initial.print(System.out);
+        var finished = State.parse(Arrays.asList(
+                  "#############",
+                  "#...........#",
+                  "###A#B#C#D###",
+                  "  #A#B#C#D#  ",
+                  "  #########  "
+        ));
+        out.println("Sample finished state " + finished.finished());
+        finished.print(out);
         var queue = new PriorityQueue<State>(Comparator.comparingInt(s -> s.energy));
+//        var queue = new ArrayDeque<State>();
         queue.offer(initial);
+//        for (State s : initial.step()) {
+//            out.println("One step state");
+//            s.print(System.out);
+//        }
         var processed = new HashSet<State>();
         while (!queue.isEmpty()) {
             var state = queue.poll();
-            if (state.finished()) {
-                state.print(System.out);
-                out.println(state.energy);
-                break;
-            }
-            if (processed.contains(state)) {
-                continue;
-            }
-            processed.add(state);
-            List<State> step = state.step();
-            out.print("\renergy " + state.energy + " states " + queue.size() + " processed " + processed.size() + "                        ");
-            if (state.energy / 1000 == 15) {
-                out.println("\rnear final state                      ");
+//            out.print("\rcurrent energy " + state.energy + " processed " + processed.size() + " queue " + queue.size());
+            out.print("\rcurrent energy " + state.energy + " queue " + queue.size());
+//            state.print(out);
+            if (state.energy == 15322) {
+                out.println("\rstate " + state.energy + " finished " + state.finished());
                 state.print(out);
             }
-            queue.addAll(step);
+            if (state.finished()) {
+                out.println("finished state energy " + state.energy);
+                state.print(System.out);
+                break;
+            }
+            if (!processed.add(state)) {
+                continue;
+            }
+            queue.addAll(state.step());
         }
     }
 
     static class Amphipod {
         static int[] units = new int[]{1, 10, 100, 1000};
+        static Map<Amphipod, Amphipod> cache = new HashMap<>();
         final char type;
         final int pos;          // 0,1,3,5,7,9,10 - hallway. 2,4,6,8 - room
         final int depth;        // 0 - hallway, 1,2 - depth in the room
 
         Amphipod(char t, int p, int d) {
             this.type = t; this.pos = p; this.depth = d;
+        }
+
+        static Amphipod valueOf(char t, int p, int d) {
+            Amphipod a = new Amphipod(t, p, d);
+            Amphipod cached = cache.get(a);
+            if (cached != null) {
+                return cached;
+            }
+            cache.put(a, a);
+            return a;
         }
 
         int destination() {
@@ -81,6 +107,7 @@ public class d23 {
                 "###.#.#.#.###",
                 "  #.#.#.#.#  ",
                 "  #########  ");
+        static final int[] hallwayDests = new int[]{0,1,3,5,7,9,10};
         final Amphipod[] amphipods;
         final int maxDepth, energy;
 
@@ -119,10 +146,12 @@ public class d23 {
                     if (dest == 2 || dest == 4 || dest == 6 || dest == 8) {
                         var depth = Arrays.stream(this.amphipods).filter(it -> it.pos == dest).mapToInt(it -> it.depth).min().orElse(this.maxDepth + 1) - 1;
                         energy += a.energy(dest, depth);
-                        moved[i] = new Amphipod(a.type, dest, depth);
+                        moved[i] = Amphipod.valueOf(a.type, dest, depth);
+//                        moved[i] = new Amphipod(a.type, dest, depth);
                     } else {
                         energy += a.energy(dest, 0);
-                        moved[i] = new Amphipod(a.type, dest, 0);
+                        moved[i] = Amphipod.valueOf(a.type, dest, 0);
+//                        moved[i] = new Amphipod(a.type, dest, 0);
                     }
                     return new State(moved, energy);
                 }
@@ -138,18 +167,26 @@ public class d23 {
         //    #########
         // rooms 2,4,6,8
         List<State> step() {
-            var result = new ArrayList<State>();
+            var result = new ArrayList<State>(1000);
             for (var i = 0; i < this.amphipods.length; i++) {
                 var amphipod = this.amphipods[i];
                 // if amphipod in the hallway and can step into its destination - step in
                 if (amphipod.pos != 2 && amphipod.pos != 4 && amphipod.pos != 6 && amphipod.pos != 8) {
                     var dest = amphipod.destination();
-                    if (!Arrays.stream(this.amphipods).anyMatch(aa -> aa.depth == 0 && aa.pos >= amphipod.pos && aa.pos <= dest) &&
+                    if (!Arrays.stream(this.amphipods).anyMatch(aa -> {
+                                if (dest > amphipod.pos) {
+                                    return aa.depth == 0 && aa.pos > amphipod.pos && aa.pos <= dest;
+                                } else {
+                                    return aa.depth == 0 && aa.pos >= dest && aa.pos < amphipod.pos;
+                                }
+                            }) &&
                         !Arrays.stream(this.amphipods).anyMatch(aa -> aa.pos == dest && aa.destination() != dest)) {
                         result.add(this.move(amphipod, dest));
                     }
-                } else if (amphipod.pos != amphipod.destination()) { // if amphipod not in the room of it's destination - step out
-                    for (var dest : new int[]{0,1,3,5,7,9,10}) {
+                } else if (amphipod.pos != amphipod.destination() ||
+                        Arrays.stream(this.amphipods).anyMatch(it -> it.pos == amphipod.pos && it.destination() != amphipod.destination())) {
+                    // if amphipod not in the room of it's destination or there are othe amphipods in the room - step out
+                    for (var dest : hallwayDests) {
                         // conditions:
                         // 1. no other amphipods between amphipod.pos and the dest in hallway
                         // 2. no other amphipods in the amphipod's room with lower depth
