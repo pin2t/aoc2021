@@ -17,21 +17,17 @@ public class d23 {
     public static void main(String[] args) {
         var reader = new BufferedReader(new InputStreamReader(System.in));
         var lines = reader.lines().collect(Collectors.toList());
+        solve(lines);
+        lines = new ArrayList<>(lines);
+        lines.add(3, "  #D#C#B#A#  ");
+        lines.add(4, "  #D#B#A#C#  ");
+        solve(lines);
+    }
+
+    static void solve(List<String> lines) {
         var initial = State.parse(lines);
-        out.println("Initial state");
-        initial.print(System.out);
-        var finished = State.parse(Arrays.asList(
-                  "#############",
-                  "#...........#",
-                  "###A#B#C#D###",
-                  "  #A#B#C#D#  ",
-                  "  #########  "
-        ));
-        out.println("Sample finished state " + finished.finished());
-        finished.print(out);
         var queue = new PriorityQueue<State>(Comparator.comparingInt(s -> s.energy));
         queue.add(initial);
-        var processed = new HashSet<State>();
         while (!queue.isEmpty()) {
             var state = queue.poll();
             out.print("\rcurrent energy " + state.energy + " queue " + queue.size());
@@ -40,11 +36,8 @@ public class d23 {
                 state.print(System.out);
                 break;
             }
-            if (!processed.add(state))
-                continue;
             for (State s : state.step())
-                if (!processed.contains(s))
-                    queue.add(s);
+                queue.add(s);
         }
     }
 
