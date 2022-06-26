@@ -2,7 +2,7 @@ import static java.lang.System.out;
 
 public class d2 {
     public static void main(String[] args) {
-        var scanner = new BeaconsScanner(System.in);
+        var scanner = new Scanner(System.in);
         long depth = 0, depth2 = 0, aim = 0, position = 0;
         while (scanner.hasNext()) {
             var cmd = scanner.next();

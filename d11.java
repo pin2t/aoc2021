@@ -26,72 +26,72 @@ public class d11 {
         }
     }
 
-}
+    static class Board {
+        static final int CAPACITY = 1000;
+        final int[] energy;
+        final int size;
 
-class Board {
-    static final int CAPACITY = 1000;
-    final int[] energy;
-    final int size;
-
-    Board(BufferedReader reader) {
-        this.energy = new int[CAPACITY * CAPACITY];
-        for (int i = 0; i < this.energy.length; i++) {
-            this.energy[i] = -1000;
-        }
-        int i = 1;
-        for (String line : reader.lines().collect(Collectors.toList())) {
-            for (int j = 1; j <= line.length(); j++) {
-                this.energy[i * CAPACITY + j] = line.charAt(j - 1) - '0';
+        Board(BufferedReader reader) {
+            this.energy = new int[CAPACITY * CAPACITY];
+            for (int i = 0; i < this.energy.length; i++) {
+                this.energy[i] = -1000;
             }
-            i++;
-        }
-        this.size = i - 1;
-    }
-
-    void print() {
-        for (int i = 1; i <= this.size; i++) {
-            for (int j = 1; j <= this.size; j++) {
-                out.print(" " + this.energy[i * CAPACITY + j]);
-            }
-            out.println();
-        }
-    }
-
-    int step() {
-        for (int i = 1; i <= this.size; i++) {
-            for (int j = 1; j <= this.size; j++) {
-                this.energy[i * CAPACITY + j]++;
-            }
-        }
-        int i = 1, flashes = 0;
-        while (i <= this.size) {
-            int j = 1;
-            while (j <= this.size) {
-                if (this.energy[i * CAPACITY + j] > 9) {
-                    this.energy[(i - 1) * CAPACITY + j]++;
-                    this.energy[(i + 1) * CAPACITY + j]++;
-                    this.energy[(i - 1) * CAPACITY + j - 1]++;
-                    this.energy[(i + 1) * CAPACITY + j + 1]++;
-                    this.energy[i * CAPACITY + j - 1]++;
-                    this.energy[i * CAPACITY + j + 1]++;
-                    this.energy[(i - 1) * CAPACITY + j + 1]++;
-                    this.energy[(i + 1) * CAPACITY + j - 1]++;
-                    this.energy[i * CAPACITY + j] = -100;
-                    i = 0;
-                    flashes++;
-                    break;
+            int i = 1;
+            for (String line : reader.lines().collect(Collectors.toList())) {
+                for (int j = 1; j <= line.length(); j++) {
+                    this.energy[i * CAPACITY + j] = line.charAt(j - 1) - '0';
                 }
-                j++;
+                i++;
             }
-            i++;
+            this.size = i - 1;
         }
-        for (i = 1; i <= this.size; i++) {
-            for (int j = 1; j <= this.size; j++) {
-                if (this.energy[i * CAPACITY + j] < 0) {
-                    this.energy[i * CAPACITY + j] = 0;
+
+        void print() {
+            for (int i = 1; i <= this.size; i++) {
+                for (int j = 1; j <= this.size; j++) {
+                    out.print(" " + this.energy[i * CAPACITY + j]);
+                }
+                out.println();
+            }
+        }
+
+        int step() {
+            for (int i = 1; i <= this.size; i++) {
+                for (int j = 1; j <= this.size; j++) {
+                    this.energy[i * CAPACITY + j]++;
                 }
             }
+            int i = 1, flashes = 0;
+            while (i <= this.size) {
+                int j = 1;
+                while (j <= this.size) {
+                    if (this.energy[i * CAPACITY + j] > 9) {
+                        this.energy[(i - 1) * CAPACITY + j]++;
+                        this.energy[(i + 1) * CAPACITY + j]++;
+                        this.energy[(i - 1) * CAPACITY + j - 1]++;
+                        this.energy[(i + 1) * CAPACITY + j + 1]++;
+                        this.energy[i * CAPACITY + j - 1]++;
+                        this.energy[i * CAPACITY + j + 1]++;
+                        this.energy[(i - 1) * CAPACITY + j + 1]++;
+                        this.energy[(i + 1) * CAPACITY + j - 1]++;
+                        this.energy[i * CAPACITY + j] = -100;
+                        i = 0;
+                        flashes++;
+                        break;
+                    }
+                    j++;
+                }
+                i++;
+            }
+            for (i = 1; i <= this.size; i++) {
+                for (int j = 1; j <= this.size; j++) {
+                    if (this.energy[i * CAPACITY + j] < 0) {
+                        this.energy[i * CAPACITY + j] = 0;
+                    }
+                }
+            }
+            return flashes;
         }
-        return flashes;
     }
 }
+

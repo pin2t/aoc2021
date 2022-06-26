@@ -50,6 +50,21 @@ public class d21 {
         }
         return Math.max(wins[0], wins[1]);
     }
+
+    static class Tuple {
+        final int[] values;
+
+        Tuple(int... values) {
+            this.values = values;
+        }
+
+        public boolean equals(Object o) {
+            return Arrays.equals(this.values, ((Tuple) o).values);
+        }
+        public int hashCode() {
+            return Arrays.hashCode(this.values);
+        }
+    }
 }
 
 class Dice  {
@@ -68,20 +83,5 @@ class Dice  {
         }
         positions[player] = (positions[player] - 1) % 10 + 1;
         rolls++;
-    }
-}
-
-class Tuple {
-    final int[] values;
-
-    Tuple(int... values) {
-        this.values = values;
-    }
-
-    public boolean equals(Object o) { 
-        return Arrays.equals(this.values, ((Tuple) o).values); 
-    }
-    public int hashCode() { 
-        return Arrays.hashCode(this.values); 
     }
 }

@@ -7,7 +7,7 @@ import static java.lang.System.out;
 
 public class d3 {
     public static void main(String[] args) {
-        var scanner = new BeaconsScanner(System.in);
+        var scanner = new Scanner(System.in);
         var values = new ArrayList<String>();
         while (scanner.hasNext()) {
             values.add(scanner.next().strip());

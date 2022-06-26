@@ -33,7 +33,7 @@ public class d23 {
             var state = queue.poll();
             if (state.finished()) {
                 out.println(state.energy);
-//                out.println("\r final state " + Arrays.stream(state.amphipods).mapToObj(Integer::toString).collect(Collectors.joining(" ")) + " energy " + state.energy);
+//                out.println("\rfinal state " + Arrays.stream(state.amphipods).mapToObj(Integer::toString).collect(Collectors.joining(" ")) + " energy " + state.energy);
 //                state.print(System.out);
                 break;
             }

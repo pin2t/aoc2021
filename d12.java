@@ -59,18 +59,17 @@ public class d12 {
             }
         }
     }
-}
+    static class Edge {
+        final String from, to;
 
-class Edge {
-    final String from, to;
-
-    Edge(String s) {
-        var pair = s.split("\\-");
-        this.from = pair[0];
-        this.to = pair[1];
+        Edge(String s) {
+            var pair = s.split("\\-");
+            this.from = pair[0];
+            this.to = pair[1];
+        }
     }
-}
 
-abstract class Path extends ArrayList<String> {
-    abstract boolean extend(String to);
+    abstract static class Path extends ArrayList<String> {
+        abstract boolean extend(String to);
+    }
 }
