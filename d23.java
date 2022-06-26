@@ -40,10 +40,11 @@ public class d23 {
                 state.print(System.out);
                 break;
             }
-            if (!processed.add(state)) {
+            if (!processed.add(state))
                 continue;
-            }
-            queue.addAll(state.step());
+            for (State s : state.step())
+                if (!processed.contains(s))
+                    queue.add(s);
         }
     }
 
@@ -61,9 +62,8 @@ public class d23 {
         static Amphipod valueOf(char t, int p, int d) {
             Amphipod a = new Amphipod(t, p, d);
             Amphipod cached = cache.get(a);
-            if (cached != null) {
+            if (cached != null)
                 return cached;
-            }
             cache.put(a, a);
             return a;
         }
@@ -108,11 +108,9 @@ public class d23 {
 
         static State parse(List<String> lines) {
             var a = new Amphipod[(lines.size() - 3) * 4];
-            for (int r = 2; r < lines.size() - 1; r++) {
-                for (int i = 3; i < 10; i+=2) {
+            for (int r = 2; r < lines.size() - 1; r++)
+                for (int i = 3; i < 10; i+=2)
                     a[(r - 2) * 4 + (i - 3) / 2] = new Amphipod(lines.get(r).charAt(i), i - 1, r - 1);
-                }
-            }
             return new State(a, 0);
         }
 
@@ -122,9 +120,8 @@ public class d23 {
                 String row = render.get(a.depth + 1);
                 render.set(a.depth + 1, row.substring(0, a.pos + 1) + a.type + row.substring(a.pos + 2));
             }
-            for (String line  : render) {
+            for (String line  : render)
                 output.println(line);
-            }
         }
 
         State move(Amphipod a, int dest) {
@@ -156,7 +153,7 @@ public class d23 {
         //    #########
         // rooms 2,4,6,8
         List<State> step() {
-            var result = new ArrayList<State>(1000);
+            var result = new ArrayList<State>(100);
             for (var i = 0; i < this.amphipods.length; i++) {
                 var amphipod = this.amphipods[i];
                 // if amphipod in the hallway and can step into its destination - step in
