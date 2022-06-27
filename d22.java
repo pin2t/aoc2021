@@ -44,64 +44,64 @@ public class d22 {
         out.println(on.size());
         out.println(cuboids.stream().mapToLong(c -> c.on ? c.cubes() : -c.cubes()).sum());
     }
-}
 
-class Tuple {
-    final int[] values;
+    static class Tuple {
+        final int[] values;
 
-    Tuple(int... values) {
-        this.values = values;
+        Tuple(int... values) {
+            this.values = values;
+        }
+
+        public boolean equals(Object o) {
+            return Arrays.equals(this.values, ((Tuple) o).values);
+        }
+        public int hashCode() {
+            return Arrays.hashCode(this.values);
+        }
     }
 
-    public boolean equals(Object o) { 
-        return Arrays.equals(this.values, ((Tuple) o).values); 
-    }
-    public int hashCode() { 
-        return Arrays.hashCode(this.values); 
-    }
-}
+    static class Cuboid {
+        static final Pattern commandPtn = Pattern.compile(".*?x=(-?\\d+)\\.\\.(-?\\d+),y=(-?\\d+)\\.\\.(-?\\d+),z=(-?\\d+)\\.\\.(-?\\d+)");
 
-class Cuboid {
-    static final Pattern commandPtn = Pattern.compile(".*?x=(-?\\d+)\\.\\.(-?\\d+),y=(-?\\d+)\\.\\.(-?\\d+),z=(-?\\d+)\\.\\.(-?\\d+)");
+        final int x1, x2, y1, y2, z1, z2;
+        final boolean on;
 
-    final int x1, x2, y1, y2, z1, z2;
-    final boolean on;
+        Cuboid(int x1, int x2, int y1, int y2, int z1, int z2, boolean on) {
+            this.x1 = Math.min(x1, x2);
+            this.x2 = Math.max(x1, x2);
+            this.y1 = Math.min(y1, y2);
+            this.y2 = Math.max(y1, y2);
+            this.z1 = Math.min(z1, z2);
+            this.z2 = Math.max(z1, z2);
+            this.on = on;
+        }
 
-    Cuboid(int x1, int x2, int y1, int y2, int z1, int z2, boolean on) {
-        this.x1 = Math.min(x1, x2); 
-        this.x2 = Math.max(x1, x2);
-        this.y1 = Math.min(y1, y2); 
-        this.y2 = Math.max(y1, y2);
-        this.z1 = Math.min(z1, z2); 
-        this.z2 = Math.max(z1, z2);
-        this.on = on;
-    }
+        Cuboid(String s) {
+            var m = commandPtn.matcher(s);
+            m.matches();
+            this.x1 = Integer.parseInt(m.group(1));
+            this.x2 = Integer.parseInt(m.group(2));
+            this.y1 = Integer.parseInt(m.group(3));
+            this.y2 = Integer.parseInt(m.group(4));
+            this.z1 = Integer.parseInt(m.group(5));
+            this.z2 = Integer.parseInt(m.group(6));
+            this.on = s.startsWith("on");
+        }
 
-    Cuboid(String s) {
-        var m = commandPtn.matcher(s);
-        m.matches();
-        this.x1 = Integer.parseInt(m.group(1));
-        this.x2 = Integer.parseInt(m.group(2));
-        this.y1 = Integer.parseInt(m.group(3));
-        this.y2 = Integer.parseInt(m.group(4));
-        this.z1 = Integer.parseInt(m.group(5));
-        this.z2 = Integer.parseInt(m.group(6));
-        this.on = s.startsWith("on");
-    }
+        Cuboid intersection(Cuboid other) {
+            return new Cuboid(Math.max(this.x1, other.x1), Math.min(this.x2, other.x2),
+                    Math.max(this.y1, other.y1), Math.min(this.y2, other.y2),
+                    Math.max(this.z1, other.z1), Math.min(this.z2, other.z2), !other.on);
+        }
 
-    Cuboid intersection(Cuboid other) {
-        return new Cuboid(Math.max(this.x1, other.x1), Math.min(this.x2, other.x2),
-                          Math.max(this.y1, other.y1), Math.min(this.y2, other.y2),
-                          Math.max(this.z1, other.z1), Math.min(this.z2, other.z2), !other.on);
-    }
+        boolean intersect(Cuboid other) {
+            return Math.min(this.x2, other.x2) >= Math.max(this.x1, other.x1) &&
+                    Math.min(this.y2, other.y2) >= Math.max(this.y1, other.y1) &&
+                    Math.min(this.z2, other.z2) >= Math.max(this.z1, other.z1);
+        }
 
-    boolean intersect(Cuboid other) {
-        return Math.min(this.x2, other.x2) >= Math.max(this.x1, other.x1) &&
-               Math.min(this.y2, other.y2) >= Math.max(this.y1, other.y1) &&
-               Math.min(this.z2, other.z2) >= Math.max(this.z1, other.z1);
-    }
-
-    long cubes() {
-        return ((long) (x2 - x1 + 1)) * (y2 - y1 + 1) * (z2 - z1 + 1);
+        long cubes() {
+            return ((long) (x2 - x1 + 1)) * (y2 - y1 + 1) * (z2 - z1 + 1);
+        }
     }
 }

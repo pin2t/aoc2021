@@ -65,23 +65,23 @@ public class d21 {
             return Arrays.hashCode(this.values);
         }
     }
-}
 
-class Dice  {
-    final int[] positions;
-    int rolls = 0;
-    int d = 1;
+    static class Dice  {
+        final int[] positions;
+        int rolls = 0;
+        int d = 1;
 
-    Dice(int[] positions) {
-        this.positions = positions;
-    }
-
-    void roll(int player) {
-        positions[player] += d++; 
-        if (d > 100) {
-            d -= 100;
+        Dice(int[] positions) {
+            this.positions = positions;
         }
-        positions[player] = (positions[player] - 1) % 10 + 1;
-        rolls++;
+
+        void roll(int player) {
+            positions[player] += d++;
+            if (d > 100) {
+                d -= 100;
+            }
+            positions[player] = (positions[player] - 1) % 10 + 1;
+            rolls++;
+        }
     }
 }

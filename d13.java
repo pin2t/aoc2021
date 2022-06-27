@@ -37,55 +37,55 @@ public class d13 {
             out.println();
         }
     }
-}
 
-class Dot {
-    final int x, y;
+    static class Dot {
+        final int x, y;
 
-    Dot(String s) {
-        var pair = s.split(",");
-        this.x = parseInt(pair[0]);
-        this.y = parseInt(pair[1]);
-    }
-    Dot(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
+        Dot(String s) {
+            var pair = s.split(",");
+            this.x = parseInt(pair[0]);
+            this.y = parseInt(pair[1]);
+        }
+        Dot(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
 
-    Dot fold(Folding f) {
-        if (f.axis.equals("x")) {
-            if (x > f.pos) {
-                return new Dot(f.pos - (x - f.pos), y);
+        Dot fold(Folding f) {
+            if (f.axis.equals("x")) {
+                if (x > f.pos) {
+                    return new Dot(f.pos - (x - f.pos), y);
+                } else {
+                    return this;
+                }
             } else {
-                return this;
-            }
-        } else {
-            if (y > f.pos) {
-                return new Dot(x, f.pos - (y - f.pos));
-            } else {
-                return this;
+                if (y > f.pos) {
+                    return new Dot(x, f.pos - (y - f.pos));
+                } else {
+                    return this;
+                }
             }
         }
-    }
-    public boolean equals(Object other) { 
-        return ((Dot)other).x == x && ((Dot)other).y == y; 
-    }
-    public int hashCode() { 
-        return this.x + this.y; 
-    }
-}
-
-class Folding {
-    static Pattern foldPtn = Pattern.compile("fold along (x|y)\\=(\\d+)");
-    final String axis;
-    final int pos;
-
-    Folding(String line) {
-        var matcher = foldPtn.matcher(line);
-        if (!matcher.matches()) {
-            throw new RuntimeException("invalid input " + line);
+        public boolean equals(Object other) {
+            return ((Dot)other).x == x && ((Dot)other).y == y;
         }
-        this.axis = matcher.group(1);
-        this.pos = parseInt(matcher.group(2));
+        public int hashCode() {
+            return this.x + this.y;
+        }
+    }
+
+    static class Folding {
+        static Pattern foldPtn = Pattern.compile("fold along (x|y)\\=(\\d+)");
+        final String axis;
+        final int pos;
+
+        Folding(String line) {
+            var matcher = foldPtn.matcher(line);
+            if (!matcher.matches()) {
+                throw new RuntimeException("invalid input " + line);
+            }
+            this.axis = matcher.group(1);
+            this.pos = parseInt(matcher.group(2));
+        }
     }
 }

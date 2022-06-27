@@ -37,9 +37,7 @@ public class d8 {
                 if (valid.size() == 10) {
                     matcher = segments.matcher(parts[1]);
                     var nn = 0;
-                    var rightFields = new ArrayList<String>();
                     while (matcher.find()) {
-                        rightFields.add(matcher.group());
                         for (int n = 0; n < templates.length; n++) {
                             if (templates[n].equals(map(mapping, matcher.group())))  {
                                 nn = nn * 10 + n;
@@ -64,21 +62,21 @@ public class d8 {
         Arrays.sort(result);
         return new String(result);
     }
-}
 
-class Permutations extends ArrayList<String> {
-    Permutations(String s) {
-        generate("", s);
-    }
+    static class Permutations extends ArrayList<String> {
+        Permutations(String s) {
+            generate("", s);
+        }
 
-    private void generate(String prefix, String str) {
-        int n = str.length();
-        if (n == 0) {
-            this.add(prefix);
-        } else {
-            for (int i = 0; i < n; i++) {
-                generate(prefix + str.charAt(i), str.substring(0, i) + str.substring(i+1, n));
+        private void generate(String prefix, String str) {
+            int n = str.length();
+            if (n == 0) {
+                this.add(prefix);
+            } else {
+                for (int i = 0; i < n; i++) {
+                    generate(prefix + str.charAt(i), str.substring(0, i) + str.substring(i+1, n));
+                }
             }
         }
     }
-} 
+}
