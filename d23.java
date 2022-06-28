@@ -7,16 +7,10 @@ import java.util.stream.Collectors;
 import static java.lang.Math.abs;
 import static java.lang.System.out;
 
-//
-//  #############
-//  #...........#
-//  ###B#D#C#A###
-//    #C#D#B#A#
-//    #########
 public class d23 {
     public static void main(String[] args) {
         var reader = new BufferedReader(new InputStreamReader(System.in));
-        var lines = reader.lines().collect(Collectors.toList());
+        var lines = reader.lines().toList();
         solve(lines);
         lines = new ArrayList<>(lines);
         lines.add(3, "  #D#C#B#A#  ");
@@ -33,14 +27,10 @@ public class d23 {
             var state = queue.poll();
             if (state.finished()) {
                 out.println(state.energy);
-//                out.println("\rfinal state " + Arrays.stream(state.amphipods).mapToObj(Integer::toString).collect(Collectors.joining(" ")) + " energy " + state.energy);
-//                state.print(System.out);
                 break;
             }
             if (!processed.add(state))
                 continue;
-//            out.println();
-//            state.print(out);
             for (State s : state.step())
                 if (!processed.contains(s))
                     queue.add(s);
@@ -69,7 +59,6 @@ public class d23 {
         final int maxDepth, energy;
 
         private State(int[] a, int e) {
-//            out.println("state " + Arrays.stream(a).mapToObj(Integer::toString).collect(Collectors.joining(" ")) + " energy " + e);
             this.amphipods = a;
             this.maxDepth = a.length / 8;
             this.energy = e;
@@ -100,7 +89,6 @@ public class d23 {
         }
 
         void print(PrintStream output) {
-//            output.println("amphipods " + this.count() + " max depth " + this.maxDepth);
             var render = this.count() > 8 ? new ArrayList<>(template2) : new ArrayList<>(template);
             this.forEach((type, pos, depth) -> {
                 String row = render.get(depth + 1);
@@ -142,6 +130,11 @@ public class d23 {
             return false;
         }
 
+        // energy used to move amphipod a to dest position and to depth if it is in the room
+        int energy(int a, int dest, int depth) {
+            return units[this.type(a) - 'A'] * (abs(dest - this.pos(a)) + abs(depth - this.depth(a)));
+        }
+
         State move(int a, int dest) {
             var moved = Arrays.copyOf(this.amphipods, this.amphipods.length);
             var energy = this.energy;
@@ -151,24 +144,26 @@ public class d23 {
                     if (pos == dest && depth <= destDepth[0])
                         destDepth[0] = depth - 1;
                 });
-                energy += units[this.type(a) - 'A'] * (abs(dest - this.pos(a)) + 1 + abs(destDepth[0] - this.depth(a)));
+                energy += this.energy(a, dest, destDepth[0]);
                 moved[a * 2] = dest;
                 moved[a * 2 + 1] = destDepth[0];
             } else {
-                energy += units[this.type(a) - 'A'] * (abs(dest - this.pos(a)) + 1 + this.depth(a));
+                energy += this.energy(a, dest, 0);
                 moved[a * 2] = dest;
                 moved[a * 2 + 1] = 0;
             }
             return new State(moved, energy);
         }
 
-        //
-        //  #############
-        //  #...........#
-        //  ###B#D#C#A###
-        //    #C#D#B#A#
-        //    #########
-        // rooms 2,4,6,8
+        State move(int pos, int depth, int dest) {
+            for (int i = 0; i < this.count(); i++) {
+                if (this.pos(i) == pos && this.depth(i) == depth) {
+                    return this.move(i, dest);
+                }
+            }
+            return this;
+        }
+
         List<State> step() {
             var result = new ArrayList<State>(100);
             for (var i = 0; i < this.count(); i++) {
