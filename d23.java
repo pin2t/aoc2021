@@ -2,14 +2,16 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static java.lang.Math.abs;
+import static java.lang.System.in;
 import static java.lang.System.out;
 
 public class d23 {
     public static void main(String[] args) {
-        var reader = new BufferedReader(new InputStreamReader(System.in));
+        var reader = new BufferedReader(new InputStreamReader(in));
         var lines = reader.lines().toList();
         solve(lines);
         lines = new ArrayList<>(lines);
@@ -18,184 +20,116 @@ public class d23 {
         solve(lines);
     }
 
-    static void solve(List<String> lines) {
-        var initial = State.parse(lines);
+    static void solve(List<String> rooms) {
+        var initial = State.parse(rooms);
         var queue = new PriorityQueue<State>(Comparator.comparingInt(s -> s.energy));
         queue.add(initial);
         var processed = new HashSet<State>();
         while (!queue.isEmpty()) {
             var state = queue.poll();
-            if (state.finished()) {
-                out.println(state.energy);
-                break;
-            }
+            if (state.isFinal()) { out.println(state.energy); break; }
             if (!processed.add(state))
                 continue;
-            for (State s : state.step())
+            for (State s : state.moves())
                 if (!processed.contains(s))
                     queue.add(s);
         }
     }
 
     static class State {
-        static int[] units = new int[]{1, 10, 100, 1000};
-        static final List<String> template = Arrays.asList(
-                "#############",
-                "#...........#",
-                "###.#.#.#.###",
-                "  #.#.#.#.#  ",
-                "  #########  ");
-        static final List<String> template2 = Arrays.asList(
-                "#############",
-                "#...........#",
-                "###.#.#.#.###",
-                "  #.#.#.#.#  ",
-                "  #.#.#.#.#  ",
-                "  #.#.#.#.#  ",
-                "  #########  ");
+        record Amphipod(char type, int pos, int depth) {
+            static int[] units = new int[] {1, 10, 100, 1000};
+
+            int destination() {
+                return (type - 'A') * 2 + 2;
+            }
+
+            // energy used to move amphipod a to dest position and to depth if it is in the room
+            int energy(int dest, int depth) {
+                return units[type - 'A'] * (abs(dest - pos) + abs(this.depth - depth));
+            }
+        };
+
         static final int[] hallwayDests = new int[]{0,1,3,5,7,9,10};
-        // flatten amphipods storage a1.pos, a1.depth, a2.pos, a2.depth, b1.pos ...
-        final int[] amphipods;
+        final List<Amphipod> amphipods;
         final int maxDepth, energy;
 
-        private State(int[] a, int e) {
+        private State(List<Amphipod> a, int e) {
             this.amphipods = a;
-            this.maxDepth = a.length / 8;
+            this.maxDepth = a.size() / 4;
             this.energy = e;
-            for (int i = 0; i < a.length; i++) {
-                if (i % 2 == 0 && a[i] > 10)
-                    throw new RuntimeException("invalid state " + Arrays.stream(a).mapToObj(Integer::toString).collect(Collectors.joining(" ")));
-                if (i % 2 == 1 && (a[i - 1] == 2 || a[i - 1] == 4 || a[i - 1] == 6 || a[i - 1] == 8) && (a[i] < 1 || a[i] > this.maxDepth))
-                    throw new RuntimeException("invalid depth " + a[i] + " should be between 1 and " + this.maxDepth + " state " +
-                            Arrays.stream(a).mapToObj(Integer::toString).collect(Collectors.joining(" ")));
-                if (i % 2 == 1 && a[i] > this.maxDepth)
-                    throw new RuntimeException("invalid depth " + a[i] + " should be between 0 and " + this.maxDepth + " state " +
-                            Arrays.stream(a).mapToObj(Integer::toString).collect(Collectors.joining(" ")));
+            Supplier<String> stateString = () -> a.stream().map(it -> "" + it.pos() + " " + it.depth).collect(Collectors.joining(" "));
+            for (Amphipod it : a) {
+                if (it.pos() > 10)
+                    throw new RuntimeException("invalid state " + stateString.get());
+                if ((it.pos() == 2 || it.pos() == 4 || it.pos() == 6 || it.pos() == 8) && (it.depth() < 1 || it.depth() > this.maxDepth))
+                    throw new RuntimeException("invalid depth " + it.depth() + " should be between 1 and " + this.maxDepth + " state " + stateString.get());
+                if (it.depth() > this.maxDepth)
+                    throw new RuntimeException("invalid depth " + it.depth() + " should be between 0 and " + this.maxDepth + " state " + stateString.get());
             }
         }
 
         static State parse(List<String> lines) {
-            var amphipods = new int[(lines.size() - 3) * 4 * 2];
-            var indicies = new int[]{0, 2, 4, 6};
-            for (int r = 2; r < lines.size() - 1; r++) {
-                for (int i = 3; i < 10; i += 2) {
-                    var type = lines.get(r).charAt(i) - 'A';
-                    amphipods[indicies[type] * 2] = i - 1;
-                    amphipods[indicies[type] * 2 + 1] = r - 1;
-                    indicies[type]++;
-                }
-            }
+            var amphipods = new ArrayList<Amphipod>();
+            for (int r = 2; r < lines.size() - 1; r++)
+                for (int i = 3; i < 10; i += 2)
+                    amphipods.add(new Amphipod(lines.get(r).charAt(i), i - 1, r - 1));
             return new State(amphipods, 0);
         }
 
-        void print(PrintStream output) {
-            var render = this.count() > 8 ? new ArrayList<>(template2) : new ArrayList<>(template);
-            this.forEach((type, pos, depth) -> {
-                String row = render.get(depth + 1);
-                render.set(depth + 1, row.substring(0, pos + 1) + type + row.substring(pos + 2));
-            });
-            for (String line  : render)
-                output.println(line);
-        }
-
         int count() {
-            return this.amphipods.length / 2;
+            return this.amphipods.size();
         }
 
-        char type(int i) {
-            return (char) ('A' + i / (this.amphipods.length / 8));
-        }
-
-        int depth(int i) {
-            return this.amphipods[i * 2 + 1];
-        }
-
-        int pos(int i) {
-            return this.amphipods[i * 2];
-        }
-
-        int destination(int i) {
-            return (this.type(i) - 'A') * 2 + 2;
-        }
-
-        void forEach(AmphipodConsumer consumer) {
-            for (var i = 0; i < count(); i++)
-                consumer.consume(this.type(i), this.pos(i), this.depth(i));
-        }
-
-        boolean anyMatch(AmphipodPredicate predicate) {
-            for (var i = 0; i < count(); i++)
-                if (predicate.test(this.type(i), this.pos(i), this.depth(i)))
-                    return true;
-            return false;
-        }
-
-        // energy used to move amphipod a to dest position and to depth if it is in the room
-        int energy(int a, int dest, int depth) {
-            return units[this.type(a) - 'A'] * (abs(dest - this.pos(a)) + abs(depth - this.depth(a)));
-        }
-
-        State move(int a, int dest) {
-            var moved = Arrays.copyOf(this.amphipods, this.amphipods.length);
+        State move(Amphipod a, int dest) {
+            var moved = new ArrayList<>(amphipods);
             var energy = this.energy;
+            var destDepth = 0;
             if (dest == 2 || dest == 4 || dest == 6 || dest == 8) {
-                var destDepth = new int[]{this.maxDepth};
-                this.forEach((type, pos, depth) -> {
-                    if (pos == dest && depth <= destDepth[0])
-                        destDepth[0] = depth - 1;
-                });
-                energy += this.energy(a, dest, destDepth[0]);
-                moved[a * 2] = dest;
-                moved[a * 2 + 1] = destDepth[0];
-            } else {
-                energy += this.energy(a, dest, 0);
-                moved[a * 2] = dest;
-                moved[a * 2 + 1] = 0;
+                destDepth = this.maxDepth;
+                for (Amphipod it : amphipods)
+                    if (it.pos() == dest && it.depth() <= destDepth)
+                        destDepth = it.depth() - 1;
             }
+            energy += a.energy(dest, destDepth);
+            for (int i = 0; i < moved.size(); i++)
+                if (moved.get(i).equals(a))
+                    moved.set(i, new Amphipod(a.type(), dest, destDepth));
             return new State(moved, energy);
         }
 
-        State move(int pos, int depth, int dest) {
-            for (int i = 0; i < this.count(); i++) {
-                if (this.pos(i) == pos && this.depth(i) == depth) {
-                    return this.move(i, dest);
-                }
-            }
-            return this;
-        }
-
-        List<State> step() {
+        // return the list of states for all possible amphipods moves from this position
+        List<State> moves() {
             var result = new ArrayList<State>(100);
-            for (var i = 0; i < this.count(); i++) {
-                var ii = i;
+            for (Amphipod a : amphipods)  {
                 // if amphipod in the hallway and can step into its destination - step in
-                if (this.pos(i) != 2 && this.pos(i) != 4 && this.pos(i) != 6 && this.pos(i) != 8) {
-                    if (!this.anyMatch((type, pos, depth) -> {
-                                if (this.destination(ii) > this.pos(ii)) {
-                                    return depth == 0 && pos > this.pos(ii) && pos <= this.destination(ii);
+                if (a.pos() != 2 && a.pos() != 4 && a.pos() != 6 && a.pos() != 8) {
+                    if (!amphipods.stream().anyMatch(aa -> {
+                                if (a.destination() > a.pos()) {
+                                    return aa.depth() == 0 && aa.pos() > a.pos() && aa.pos() <= a.destination();
                                 } else {
-                                    return depth == 0 && pos >= this.destination(ii) && pos < this.pos(ii);
+                                    return aa.depth() == 0 && aa.pos() >= a.destination() && aa.pos() < a.pos();
                                 }
                             }) &&
-                        !this.anyMatch((type, pos, depth) -> pos == this.destination(ii) && ((type - 'A') * 2 + 2) != this.destination(ii))) {
-                        result.add(this.move(i, this.destination(i)));
+                        !amphipods.stream().anyMatch(aa -> aa.pos() == a.destination() && ((aa.type() - 'A') * 2 + 2) != a.destination())) {
+                        result.add(this.move(a, a.destination()));
                     }
-                } else if (this.pos(i) != this.destination(i) ||
-                        this.anyMatch((type, pos, depth) -> pos == this.pos(ii) && ((type - 'A') * 2 + 2) != this.destination(ii))) {
+                } else if (a.pos() != a.destination() ||
+                        amphipods.stream().anyMatch(aa -> aa.pos() == a.pos() && ((aa.type() - 'A') * 2 + 2) != a.destination())) {
                     // if amphipod not in the room of it's destination or there are othe amphipods in the room - step out
                     for (var dest : hallwayDests) {
                         // conditions:
                         // 1. no other amphipods between amphipod.pos and the dest in hallway
                         // 2. no other amphipods in the amphipod's room with lower depth
-                        if (!this.anyMatch((type, pos, depth) -> {
-                                    if (dest > this.pos(ii)) {
-                                        return pos > this.pos(ii) && pos <= dest && depth == 0;
+                        if (!amphipods.stream().anyMatch(aa -> {
+                                    if (dest > a.pos()) {
+                                        return aa.pos() > a.pos() && aa.pos() <= dest && aa.depth() == 0;
                                     } else {
-                                        return pos >= dest && depth == 0 && pos < this.pos(ii);
+                                        return aa.pos() >= dest && aa.depth() == 0 && aa.pos() < a.pos();
                                     }
                                 }) &&
-                            !this.anyMatch((type, pos, depth) -> pos == this.pos(ii) && depth < this.depth(ii))) {
-                            result.add(this.move(i, dest));
+                            !amphipods.stream().anyMatch(aa -> aa.pos() == a.pos() && aa.depth() < a.depth())) {
+                            result.add(this.move(a, dest));
                         }
                     }
                 }
@@ -203,28 +137,18 @@ public class d23 {
             return result;
         }
 
-        boolean finished() {
-            return !this.anyMatch((type, pos, depth) -> pos != ((type - 'A') * 2 + 2));
+        boolean isFinal() {
+            return !amphipods.stream().anyMatch(it -> it.pos() != ((it.type() - 'A') * 2 + 2));
         }
 
         public boolean equals(Object other) {
             if (other == this) return true;
             if (!(other instanceof State)) return false;
-            State s = (State) other;
-            return Arrays.equals(this.amphipods, s.amphipods);
+            return amphipods.equals(((State) other).amphipods);
         }
 
         public int hashCode() {
-            return Arrays.hashCode(this.amphipods);
+            return this.amphipods.hashCode();
         }
     }
-
-    interface AmphipodConsumer {
-        void consume(char type, int pos, int depth);
-    }
-
-    interface AmphipodPredicate {
-        boolean test(char type, int pos, int depth);
-    }
 }
-
