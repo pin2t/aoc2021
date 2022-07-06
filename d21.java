@@ -1,5 +1,4 @@
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.lang.System.out;
 
@@ -25,7 +24,6 @@ public class d21 {
 
     static long universes(int[] positions) {
         var tuples = new HashMap<Tuple, Long>();
-        // tuple [pos1, pos2, score1, score2, player]
         tuples.put(new Tuple(positions[0], positions[1], 0, 0, 1), 1L);
         var wins = new long[] {0, 0};
         var splits = new int[] {1+1+1, 1+1+2, 1+1+3, 1+2+1, 1+2+2, 1+2+3, 1+3+1, 1+3+2, 1+3+3,
@@ -36,14 +34,14 @@ public class d21 {
             var tuple = e.getKey();
             tuples.remove(tuple);
             for (var split : splits) {
-                var player = tuple.values[4];
-                var pos = (tuple.values[player - 1] + split - 1) % 10 + 1;
-                if (tuple.values[2 + player - 1] + pos >= 21) {
+                var player = tuple.player();
+                var pos = ((player == 2 ? tuple.pos2() : tuple.pos1()) + split - 1) % 10 + 1;
+                if ((player == 2 ? tuple.score2() : tuple.score1()) + pos >= 21) {
                     wins[player - 1] += e.getValue();
                 } else {
                     var t = player == 1 ? 
-                        new Tuple(pos, tuple.values[1], tuple.values[2] + pos, tuple.values[3], 2) :
-                        new Tuple(tuple.values[0], pos, tuple.values[2], tuple.values[3] + pos, 1);
+                        new Tuple(pos, tuple.pos2(), tuple.score1() + pos, tuple.score2(), 2) :
+                        new Tuple(tuple.pos1(), pos, tuple.score1(), tuple.score2() + pos, 1);
                     tuples.merge(t, e.getValue(), Long::sum);
                 }
             }
@@ -51,20 +49,7 @@ public class d21 {
         return Math.max(wins[0], wins[1]);
     }
 
-    static class Tuple {
-        final int[] values;
-
-        Tuple(int... values) {
-            this.values = values;
-        }
-
-        public boolean equals(Object o) {
-            return Arrays.equals(this.values, ((Tuple) o).values);
-        }
-        public int hashCode() {
-            return Arrays.hashCode(this.values);
-        }
-    }
+    record Tuple (int pos1, int pos2, int score1, int score2, int player) {}
 
     static class Dice  {
         final int[] positions;
@@ -77,9 +62,7 @@ public class d21 {
 
         void roll(int player) {
             positions[player] += d++;
-            if (d > 100) {
-                d -= 100;
-            }
+            if (d > 100) { d -= 100; }
             positions[player] = (positions[player] - 1) % 10 + 1;
             rolls++;
         }

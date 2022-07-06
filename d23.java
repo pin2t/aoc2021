@@ -77,10 +77,6 @@ public class d23 {
             return new State(amphipods, 0);
         }
 
-        int count() {
-            return this.amphipods.size();
-        }
-
         State move(Amphipod a, int dest) {
             var moved = new ArrayList<>(amphipods);
             var energy = this.energy;

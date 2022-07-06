@@ -9,7 +9,7 @@ import static java.lang.System.out;
 public class d22 {
     public static void main(String[] args) throws IOException {
         var reader = new BufferedReader(new InputStreamReader(System.in));
-        var on = new HashSet<Tuple>();
+        var on = new HashSet<Point>();
         var cuboids = new ArrayList<Cuboid>();
         var part1 = new Cuboid(-50, 50, -50, 50, -50, 50, false);
         while (reader.ready()) {
@@ -22,9 +22,9 @@ public class d22 {
                     for (var y = p1c.y1; y <= p1c.y2; y++) {
                         for (var z = p1c.z1; z <= p1c.z2; z++) {
                             if (line.startsWith("on"))
-                                on.add(new Tuple(x, y, z));
+                                on.add(new Point(x, y, z));
                             else
-                                on.remove(new Tuple(x, y, z));
+                                on.remove(new Point(x, y, z));
                         }
                     }
                 }
@@ -45,20 +45,7 @@ public class d22 {
         out.println(cuboids.stream().mapToLong(c -> c.on ? c.cubes() : -c.cubes()).sum());
     }
 
-    static class Tuple {
-        final int[] values;
-
-        Tuple(int... values) {
-            this.values = values;
-        }
-
-        public boolean equals(Object o) {
-            return Arrays.equals(this.values, ((Tuple) o).values);
-        }
-        public int hashCode() {
-            return Arrays.hashCode(this.values);
-        }
-    }
+    record Point(int x, int y, int z) {}
 
     static class Cuboid {
         static final Pattern commandPtn = Pattern.compile(".*?x=(-?\\d+)\\.\\.(-?\\d+),y=(-?\\d+)\\.\\.(-?\\d+),z=(-?\\d+)\\.\\.(-?\\d+)");
