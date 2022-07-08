@@ -15,62 +15,33 @@ public class d13 {
         var dots = new HashSet<Dot>();
         var foldings = new ArrayList<Folding>();
         reader.lines().forEach(line -> {
-            if (line.startsWith("fold")) {
+            if (line.startsWith("fold"))
                 foldings.add(new Folding(line));
-            } else if (!line.isBlank()) {
-                dots.add(new Dot(line));
-            }
+            else if (!line.isBlank())
+                dots.add(Dot.parse(line));
         });
         out.println(dots.stream().map(d -> d.fold(foldings.get(0))).collect(Collectors.toSet()).size());
         Set<Dot> result = new HashSet<>(dots);
-        for (var f : foldings) {
+        for (var f : foldings)
             result = result.stream().map(d -> d.fold(f)).collect(Collectors.toSet());
-        }
         for (int y = 0; y < result.stream().mapToInt(d -> d.y).max().getAsInt() + 1; y++) {
-            for (int x = 0; x < result.stream().mapToInt(d -> d.x).max().getAsInt() + 1; x++) {
-                if (result.contains(new Dot(x, y))) {
-                    out.print("#");
-                } else {
-                    out.print(".");
-                }
-            }
+            for (int x = 0; x < result.stream().mapToInt(d -> d.x).max().getAsInt() + 1; x++)
+                out.print(result.contains(new Dot(x, y)) ? "#" : ".");
             out.println();
         }
     }
 
-    static class Dot {
-        final int x, y;
-
-        Dot(String s) {
+    record Dot (int x, int y) {
+        static Dot parse(String s) {
             var pair = s.split(",");
-            this.x = parseInt(pair[0]);
-            this.y = parseInt(pair[1]);
-        }
-        Dot(int x, int y) {
-            this.x = x;
-            this.y = y;
+            return new Dot(parseInt(pair[0]), parseInt(pair[1]));
         }
 
         Dot fold(Folding f) {
-            if (f.axis.equals("x")) {
-                if (x > f.pos) {
-                    return new Dot(f.pos - (x - f.pos), y);
-                } else {
-                    return this;
-                }
-            } else {
-                if (y > f.pos) {
-                    return new Dot(x, f.pos - (y - f.pos));
-                } else {
-                    return this;
-                }
-            }
-        }
-        public boolean equals(Object other) {
-            return ((Dot)other).x == x && ((Dot)other).y == y;
-        }
-        public int hashCode() {
-            return this.x + this.y;
+            if (f.axis.equals("x"))
+                return x > f.pos ? new Dot(f.pos - (x - f.pos), y) : this;
+            else
+                return y > f.pos ? new Dot(x, f.pos - (y - f.pos)) : this;
         }
     }
 
@@ -81,9 +52,8 @@ public class d13 {
 
         Folding(String line) {
             var matcher = foldPtn.matcher(line);
-            if (!matcher.matches()) {
+            if (!matcher.matches())
                 throw new RuntimeException("invalid input " + line);
-            }
             this.axis = matcher.group(1);
             this.pos = parseInt(matcher.group(2));
         }

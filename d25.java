@@ -4,6 +4,8 @@ import java.io.*;
 import java.util.*;
 
 public class d25 {
+    record Pos(int x, int y) {}
+
     public static void main(String[] args) throws IOException {
         var reader = new BufferedReader(new InputStreamReader(System.in));
         var west = new HashSet<Pos>(10_000);
@@ -47,20 +49,5 @@ public class d25 {
             west = wstep; south = sstep;
         } while (moved);
         out.println(step);
-    }
-
-    static class Pos {
-        final int x, y;
-
-        Pos(int x, int y) {
-            this.x = x; this.y = y;
-        }
-
-        public boolean equals(Object o) {
-            return this.x == ((Pos)o).x && this.y == ((Pos)o).y;
-        }
-        public int hashCode() {
-            return Objects.hash(this.x, this.y);
-        }
     }
 }

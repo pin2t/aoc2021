@@ -14,21 +14,7 @@ public class d9 {
         out.println(sizes.get(sizes.size() - 1) * sizes.get(sizes.size() - 2) * sizes.get(sizes.size() - 3));
     }
 
-    static class Position {
-        final int x, y;
-
-        Position(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
-
-        public boolean equals(Object other) {
-            return x == ((Position)other).x && y == ((Position)other).y;
-        }
-        public int hashCode() {
-            return Objects.hash(this.x, this.y);
-        }
-    }
+    record Position (int x, int y) { }
 
     static class Field {
         final List<String> heights = new ArrayList<>();
@@ -46,13 +32,10 @@ public class d9 {
 
         int risk() {
             int result = 0;
-            for (int y = 1; y < heights.size() - 1; y++) {
-                for (int x = 1; x < heights.get(0).length() - 1; x++) {
-                    if (this.low(x, y)) {
+            for (int y = 1; y < heights.size() - 1; y++)
+                for (int x = 1; x < heights.get(0).length() - 1; x++)
+                    if (this.low(x, y))
                         result += 1 + (int)heights.get(y).charAt(x)-'0';
-                    }
-                }
-            }
             return result;
         }
 
@@ -62,16 +45,14 @@ public class d9 {
             var queue = new LinkedList<Position>();
             for (int y = 1; y < heights.size() - 1; y++) {
                 for (int x = 1; x < heights.get(0).length() - 1; x++) {
-                    if (processed.contains(new Position(x, y)) || heights.get(y).charAt(x) == '9') {
+                    if (processed.contains(new Position(x, y)) || heights.get(y).charAt(x) == '9')
                         continue;
-                    }
                     queue.add(new Position(x, y));
                     var basin = new HashSet<Position>();
                     while (!queue.isEmpty()) {
                         var p = queue.poll();
-                        if (processed.contains(p) || heights.get(p.y).charAt(p.x) == '9') {
+                        if (processed.contains(p) || heights.get(p.y).charAt(p.x) == '9')
                             continue;
-                        }
                         basin.add(p);
                         processed.add(p);
                         queue.add(new Position(p.x - 1, p.y));
@@ -86,5 +67,3 @@ public class d9 {
         }
     }
 }
-
-

@@ -19,18 +19,7 @@ public class d16 {
         out.println(packet.result());
     }
 
-    static class Packet {
-        final long value;
-        final int id, version, len;
-        final List<Packet> subpackets;
-
-        private Packet(long val, int id, int ver, int l, List<Packet> subs) {
-            this.value = val;
-            this.id = id;
-            this.version = ver;
-            this.len = l;
-            this.subpackets = subs;
-        }
+    record Packet (long value, int id, int version, int len, List<Packet> subpackets) {
 
         static Packet parse(String input) {
             var version = Integer.parseInt(input.substring(0, 3), 2);
