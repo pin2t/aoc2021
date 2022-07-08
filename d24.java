@@ -10,7 +10,6 @@ public class d24 {
         var instructions = new ArrayList<Instruction>();
         var reader = new BufferedReader(new InputStreamReader(in));
         reader.lines().forEach(line -> { if (!line.isBlank()) instructions.add(Instruction.parse(line)); });
-//        for (var i : instructions) out.println(i.op() + " " + i.arg1() + " " + i.arg2());
         var programs = new ArrayList<List<Instruction>>();
         for (var i : instructions) {
             if ("inp".equals(i.op()))
