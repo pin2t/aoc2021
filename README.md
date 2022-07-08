@@ -14,4 +14,4 @@ Then run
 
 `java d1.java < inputs/1.txt`
 
-This works for Java 11+ only
+Works for Java 17+ only
