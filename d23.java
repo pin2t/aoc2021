@@ -99,14 +99,14 @@ public class d23 {
             for (Amphipod a : amphipods)  {
                 // if amphipod in the hallway and can step into its destination - step in
                 if (a.pos() != 2 && a.pos() != 4 && a.pos() != 6 && a.pos() != 8) {
-                    if (!amphipods.stream().anyMatch(aa -> {
+                    if (amphipods.stream().noneMatch(aa -> {
                                 if (a.destination() > a.pos()) {
                                     return aa.depth() == 0 && aa.pos() > a.pos() && aa.pos() <= a.destination();
                                 } else {
                                     return aa.depth() == 0 && aa.pos() >= a.destination() && aa.pos() < a.pos();
                                 }
                             }) &&
-                        !amphipods.stream().anyMatch(aa -> aa.pos() == a.destination() && ((aa.type() - 'A') * 2 + 2) != a.destination())) {
+                            amphipods.stream().noneMatch(aa -> aa.pos() == a.destination() && ((aa.type() - 'A') * 2 + 2) != a.destination())) {
                         result.add(this.move(a, a.destination()));
                     }
                 } else if (a.pos() != a.destination() ||
@@ -116,14 +116,14 @@ public class d23 {
                         // conditions:
                         // 1. no other amphipods between amphipod.pos and the dest in hallway
                         // 2. no other amphipods in the amphipod's room with lower depth
-                        if (!amphipods.stream().anyMatch(aa -> {
+                        if (amphipods.stream().noneMatch(aa -> {
                                     if (dest > a.pos()) {
                                         return aa.pos() > a.pos() && aa.pos() <= dest && aa.depth() == 0;
                                     } else {
                                         return aa.pos() >= dest && aa.depth() == 0 && aa.pos() < a.pos();
                                     }
                                 }) &&
-                            !amphipods.stream().anyMatch(aa -> aa.pos() == a.pos() && aa.depth() < a.depth())) {
+                                amphipods.stream().noneMatch(aa -> aa.pos() == a.pos() && aa.depth() < a.depth())) {
                             result.add(this.move(a, dest));
                         }
                     }
@@ -133,7 +133,7 @@ public class d23 {
         }
 
         boolean isFinal() {
-            return !amphipods.stream().anyMatch(it -> it.pos() != ((it.type() - 'A') * 2 + 2));
+            return amphipods.stream().noneMatch(it -> it.pos() != ((it.type() - 'A') * 2 + 2));
         }
 
         public boolean equals(Object other) {

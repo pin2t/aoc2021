@@ -1,7 +1,6 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static java.lang.System.out;
 
@@ -10,7 +9,7 @@ public class d9 {
         var reader = new BufferedReader(new InputStreamReader(System.in));
         var field = new Field(reader);
         out.println(field.risk());
-        var sizes = field.basins().stream().sorted().collect(Collectors.toList());
+        var sizes = field.basins().stream().sorted().toList();
         out.println(sizes.get(sizes.size() - 1) * sizes.get(sizes.size() - 2) * sizes.get(sizes.size() - 3));
     }
 

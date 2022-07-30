@@ -63,7 +63,7 @@ public class d12 {
         final String from, to;
 
         Edge(String s) {
-            var pair = s.split("\\-");
+            var pair = s.split("-");
             this.from = pair[0];
             this.to = pair[1];
         }

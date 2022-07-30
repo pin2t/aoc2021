@@ -65,7 +65,7 @@ public class d22 {
 
         Cuboid(String s) {
             var m = commandPtn.matcher(s);
-            m.matches();
+            if (!m.matches()) throw new RuntimeException("invalid cuboid format " + s);
             this.x1 = Integer.parseInt(m.group(1));
             this.x2 = Integer.parseInt(m.group(2));
             this.y1 = Integer.parseInt(m.group(3));

@@ -1,6 +1,5 @@
 import java.io.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class d10 {
     public static void main(String[] args) {
@@ -10,7 +9,7 @@ public class d10 {
         var incScore = new HashMap<String, Long>() {{put("(", 1L); put("[", 2L); put("{", 3L); put("<", 4L);}};
         var error = 0L;
         var incompletes = new ArrayList<Long>();
-        for (String line : reader.lines().collect(Collectors.toList())) {
+        for (String line : reader.lines().toList()) {
             var i = 0;
             var stack = new LinkedList<String>();
             while (i < line.length()) {

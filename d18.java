@@ -3,7 +3,6 @@ import java.io.InputStreamReader;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static java.lang.System.out;
 
@@ -12,7 +11,7 @@ public class d18 {
 
     public static void main(String[] args) {
         var reader = new BufferedReader(new InputStreamReader(System.in));
-        var numbers = reader.lines().collect(Collectors.toList());
+        var numbers = reader.lines().toList();
         var result = numbers.get(0);
         for (var i = 1; i < numbers.size(); i++) {
             result = sum(result, numbers.get(i));
@@ -75,8 +74,7 @@ public class d18 {
 
     static String split(String n, int pos) {
         var regular = peekRegular(n, pos);
-        var result =  n.substring(0, pos) + "[" + regular / 2 + "," + (regular / 2 + regular % 2) + "]" + n.substring(pos + 2);
-        return result;
+        return n.substring(0, pos) + "[" + regular / 2 + "," + (regular / 2 + regular % 2) + "]" + n.substring(pos + 2);
     }
 
     static boolean isdigit(String s, int pos) { return s.charAt(pos) >= '0' && s.charAt(pos) <= '9'; }

@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.function.Supplier;
 
 import static java.lang.System.out;
 
@@ -22,6 +23,7 @@ public class d14 {
             line = reader.readLine();
             rules.put(line.substring(0, 2), line.charAt(6));
         }
+        Supplier<Long> difference = () -> counts.values().stream().max(Long::compareTo).get() - counts.values().stream().min(Long::compareTo).get();
         for (int step = 1; step <= 40; step++) {
             var newpairs = new HashMap<String, Long>();
             for (var pair : pairs.entrySet()) {
@@ -32,10 +34,10 @@ public class d14 {
                 }
             }
             if (step == 10) {
-                out.println(counts.values().stream().max(Long::compareTo).get() - counts.values().stream().min(Long::compareTo).get());
+                out.println(difference.get());
             }
             pairs = newpairs;
         }
-        out.println(counts.values().stream().max(Long::compareTo).get() - counts.values().stream().min(Long::compareTo).get());
+        out.println(difference.get());
     }
 }

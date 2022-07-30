@@ -1,6 +1,6 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.stream.Collectors;
+import java.util.Arrays;
 
 import static java.lang.System.out;
 
@@ -33,11 +33,9 @@ public class d11 {
 
         Board(BufferedReader reader) {
             this.energy = new int[CAPACITY * CAPACITY];
-            for (int i = 0; i < this.energy.length; i++) {
-                this.energy[i] = -1000;
-            }
+            Arrays.fill(this.energy, -1000);
             int i = 1;
-            for (String line : reader.lines().collect(Collectors.toList())) {
+            for (String line : reader.lines().toList()) {
                 for (int j = 1; j <= line.length(); j++) {
                     this.energy[i * CAPACITY + j] = line.charAt(j - 1) - '0';
                 }

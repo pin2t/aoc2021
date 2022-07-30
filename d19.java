@@ -64,7 +64,7 @@ public class d19 {
     static Optional<Position> match(Set<Position> beacons, BeaconsScanner scanner) {
         for (Position beacon : beacons) {
             for (Position p : scanner.beacons) {
-                var mapped = scanner.beacons.stream().map(b -> b.move(beacon.x - p.x, beacon.y - p.y, beacon.z - p.z)).collect(Collectors.toList());
+                var mapped = scanner.beacons.stream().map(b -> b.move(beacon.x - p.x, beacon.y - p.y, beacon.z - p.z)).toList();
                 if (mapped.stream().filter(beacons::contains).count() >= 12) {
                     beacons.addAll(mapped);
                     return Optional.of(new Position(beacon.x - p.x, beacon.y - p.y, beacon.z - p.z));
