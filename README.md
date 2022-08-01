@@ -15,3 +15,6 @@ Then run
 `java d1.java < inputs/1.txt`
 
 Works for Java 17+ only
+
+## Running ruby solutions
+`ruby 1.rb < inputs/1.txt`
