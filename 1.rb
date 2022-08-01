@@ -1,8 +1,8 @@
-prev = [10000000, 1000000, 1000000]
-increases = 0; increases2 = 0
+prev = [10000000, 1000000, 1000000, 1000000]
+increases = increases2 = 0
 STDIN.each_line do |line|
-    prev[2] = prev[1]; prev[1] = prev[0]; prev[0] = line.to_i
+    prev = [line.to_i, prev[0], prev[1], prev[2]]
     increases += 1 if prev[0] > prev[1]
-    increases2+= 1 if prev[0] > prev[2]
+    increases2+= 1 if prev[0] > prev[3]
 end
 print [increases, increases2]
