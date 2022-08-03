@@ -35,13 +35,13 @@ end
 numbers = $stdin.gets.strip.split(",").map(&:to_i)
 boards = []
 while $stdin.gets != nil do boards.append(Board.parse($stdin)) end
-score = 0
+score = -1
 numbers.each do |n|
     boards.each do |board|
         next if board.win?
         board.mark(n)
         if board.win?
-            if score == 0 then puts(board.score(n)) end
+            if score == -1 then puts(board.score(n)) end
             score = board.score(n)
         end
     end 
