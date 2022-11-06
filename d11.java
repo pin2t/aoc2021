@@ -6,8 +6,8 @@ import static java.lang.System.out;
 
 public class d11 {
     public static void main(String[] args) {
-        var reader = new BufferedReader(new InputStreamReader(System.in));
-        var board = new Board(reader);
+        var input = new BufferedReader(new InputStreamReader(System.in));
+        var board = new Board(input);
         int result = 0, s = 1, all = 0;
         while (s <= 100) {
             var flashes = board.step();
@@ -31,11 +31,11 @@ public class d11 {
         final int[] energy;
         final int size;
 
-        Board(BufferedReader reader) {
+        Board(BufferedReader input) {
             this.energy = new int[CAPACITY * CAPACITY];
             Arrays.fill(this.energy, -1000);
             int i = 1;
-            for (String line : reader.lines().toList()) {
+            for (String line : input.lines().toList()) {
                 for (int j = 1; j <= line.length(); j++) {
                     this.energy[i * CAPACITY + j] = line.charAt(j - 1) - '0';
                 }
