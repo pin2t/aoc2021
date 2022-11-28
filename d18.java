@@ -1,6 +1,5 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,12 +15,12 @@ public class d18 {
         for (var i = 1; i < numbers.size(); i++) {
             result = sum(result, numbers.get(i));
         }
-        out.println(magnitude(result, new AtomicInteger(0)));
+        out.println(magnitude(result, 0));
         var maxmag = 0;
         for (var i = 1; i < numbers.size(); i++) {
             for (var j = 1; j < numbers.size(); j++) {
                 if (i == j) continue;
-                maxmag = Math.max(maxmag, magnitude(sum(numbers.get(i), numbers.get(j)), new AtomicInteger(0)));
+                maxmag = Math.max(maxmag, magnitude(sum(numbers.get(i), numbers.get(j)), 0).a);
             }
         }
         out.println(maxmag);
@@ -96,17 +95,17 @@ public class d18 {
         return s.substring(0, pos) + n + s.substring(pos + l);
     }
 
-    static int magnitude(String n, AtomicInteger pos) {
-        if (n.charAt(pos.get()) == '[') {
-            pos.incrementAndGet();
-            var mleft = magnitude(n, pos);
-            pos.incrementAndGet();
-            var mright = magnitude(n, pos);
-            pos.incrementAndGet();
-            return mleft * 3 + mright * 2;
+    static IgnorePair magnitude(String n, int pos) {
+        if (n.charAt(pos) == '[') {
+            var mleft = magnitude(n, pos + 1);
+            var mright = magnitude(n, mleft.b);
+            return new IgnorePair(mleft.a * 3 + mright.a * 2, mright.b);
         } else {
-            pos.incrementAndGet();
-            return n.charAt(pos.get() - 1) - '0';
+            return new IgnorePair(n.charAt(pos) - '0', pos + 1);
         }
+    }
+
+    record IgnorePair(int a, int b) {
+        public String toString() { return Integer.toString(a); }
     }
 }
