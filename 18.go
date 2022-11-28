@@ -26,7 +26,7 @@ func (p pair) magnitude() int {
 }
 
 func parse(s string) number {
-
+	return regular{0}
 }
 
 func main() {
