@@ -8,3 +8,4 @@ out/
 /d25
 /d25.build_artifacts.txt
 .fleet/settings.json
+.vscode/
